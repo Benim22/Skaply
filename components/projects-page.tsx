@@ -4,7 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ExternalLink, Filter } from "lucide-react"
+import { ExternalLink, Filter, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 
@@ -21,6 +21,17 @@ interface ProjectItem {
 }
 
 const allProjects: ProjectItem[] = [
+  {
+    title: "Barberhaus",
+    description: "Komplett webbplattform för premium barberupplevelse byggd med Next.js och Tailwind CSS. Implementerade responsiv design, React Context API för flerspråksstöd, avancerat bokningssystem med Supabase-databas och JWT-autentisering. Designen kombinerar modern UI med klassiska barbertraditioner genom skräddarsydda animationer och optimerad användarupplevelse.",
+    category: "Webbutveckling",
+    image: "/barberhaus.png",
+    technologies: ["Next.js", "Tailwind CSS", "React", "Vercel"],
+    link: "https://barberhaus.vercel.app/",
+    featured: true,
+    client: "Barberhaus Stockholm",
+    year: "2025",
+  },
   {
     title: "TechFlow",
     description: "Modern e-handelsplattform för teknikprodukter med sömlös betalningsintegration och lagerhantering.",
@@ -99,6 +110,7 @@ const categories = [
 
 export function ProjectsPage() {
   const [activeCategory, setActiveCategory] = useState("Alla")
+  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null)
   
   const filteredProjects = allProjects.filter(project => {
     // Filter by category
@@ -124,6 +136,16 @@ export function ProjectsPage() {
         duration: 0.5,
       },
     },
+  }
+
+  const openModal = (project: ProjectItem) => {
+    setSelectedProject(project)
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeModal = () => {
+    setSelectedProject(null)
+    document.body.style.overflow = 'auto'
   }
 
   return (
@@ -230,13 +252,24 @@ export function ProjectsPage() {
                       )}
                     </div>
                     
-                    <Link
-                      href={project.link}
-                      className="inline-flex items-center text-[#00ADB5] hover:text-[#00ADB5]/80 transition-colors duration-300 text-sm"
-                    >
-                      <span className="mr-1">Se projektet</span>
-                      <ExternalLink size={14} />
-                    </Link>
+                    <div className="flex justify-between items-center">
+                      <Link
+                        href={project.link}
+                        className="inline-flex items-center text-[#00ADB5] hover:text-[#00ADB5]/80 transition-colors duration-300 text-sm"
+                      >
+                        <span className="mr-1">Se projektet</span>
+                        <ExternalLink size={14} />
+                      </Link>
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-xs border-[#0F3460]/30 hover:bg-[#00ADB5]/10 hover:text-[#00ADB5] hover:border-[#00ADB5]/50"
+                        onClick={() => openModal(project)}
+                      >
+                        Läs mer
+                      </Button>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -258,6 +291,84 @@ export function ProjectsPage() {
           </div>
         </div>
       </section>
+      
+      {/* Project Modal */}
+      {selectedProject && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <div 
+            className="bg-[#16213E] rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative h-64 sm:h-80">
+              <Image
+                src={selectedProject.image}
+                alt={selectedProject.title}
+                fill
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#16213E] to-transparent opacity-70"></div>
+              <button 
+                onClick={closeModal}
+                className="absolute top-3 right-3 bg-black/50 hover:bg-black/70 text-white p-1.5 rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+              <div className="absolute top-3 left-3">
+                <div className="bg-[#00ADB5] text-white text-xs py-1 px-2 rounded-full">
+                  {selectedProject.category}
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-2xl font-bold text-white">{selectedProject.title}</h2>
+                <div className="text-sm text-foreground/60">
+                  {selectedProject.year}
+                </div>
+              </div>
+              
+              <div className="mb-6">
+                <h3 className="text-sm uppercase text-foreground/60 mb-1">Beskrivning</h3>
+                <p className="text-foreground/90">{selectedProject.description}</p>
+              </div>
+              
+              {selectedProject.client && (
+                <div className="mb-6">
+                  <h3 className="text-sm uppercase text-foreground/60 mb-1">Klient</h3>
+                  <p className="text-foreground/90">{selectedProject.client}</p>
+                </div>
+              )}
+              
+              <div className="mb-6">
+                <h3 className="text-sm uppercase text-foreground/60 mb-1">Teknologier</h3>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {selectedProject.technologies.map((tech, i) => (
+                    <span
+                      key={i}
+                      className="text-sm bg-[#0F3460]/50 border border-[#0F3460]/30 py-1 px-3 rounded-full text-foreground/90"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="flex justify-center mt-6">
+                <Button 
+                  asChild
+                  className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white"
+                >
+                  <Link href={selectedProject.link} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink size={16} className="mr-2" />
+                    Besök projektet
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       
       <style jsx global>{`
         .hide-scrollbar::-webkit-scrollbar {

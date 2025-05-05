@@ -26,10 +26,10 @@ const services = [
     ],
     technologies: ["React", "Next.js", "Tailwind CSS", "Supabase", "TypeScript", "Node.js"],
     pricing: {
-      basic: "30 000 kr",
-      standard: "60 000 kr",
-      premium: "120 000 kr",
-      hourly: "1 200 kr/timme",
+      basic: "12 000 kr",
+      standard: "24 000 kr",
+      premium: "48 000 kr",
+      hourly: "500 kr/timme",
       description:
         "Priserna varierar beroende på projektets omfattning och komplexitet. Kontakta oss för en skräddarsydd offert.",
     },
@@ -50,10 +50,10 @@ const services = [
     ],
     technologies: ["React Native", "Expo", "Firebase", "Redux", "Native Modules", "App Store Connect"],
     pricing: {
-      basic: "50 000 kr",
-      standard: "100 000 kr",
-      premium: "200 000 kr",
-      hourly: "1 300 kr/timme",
+      basic: "20 000 kr",
+      standard: "35 000 kr",
+      premium: "70 000 kr",
+      hourly: "550 kr/timme",
       description:
         "Mobilappar kräver ofta mer utvecklingstid och testning. Kontakta oss för en detaljerad offert baserad på din app-idé.",
     },
@@ -74,10 +74,10 @@ const services = [
     ],
     technologies: ["OpenAI API", "TensorFlow", "Python", "Node.js", "Natural Language Processing", "Machine Learning"],
     pricing: {
-      basic: "40 000 kr",
-      standard: "80 000 kr",
-      premium: "150 000 kr",
-      hourly: "1 400 kr/timme",
+      basic: "15 000 kr",
+      standard: "29 000 kr",
+      premium: "55 000 kr",
+      hourly: "600 kr/timme",
       description:
         "AI-projekt prissätts baserat på komplexitet, datamängd och integrationer. Kontakta oss för en konsultation.",
     },
@@ -98,10 +98,10 @@ const services = [
     ],
     technologies: ["Figma", "Adobe Creative Suite", "Sketch", "Framer", "UI/UX Principles", "Design Systems"],
     pricing: {
-      basic: "15 000 kr",
-      standard: "30 000 kr",
-      premium: "60 000 kr",
-      hourly: "1 000 kr/timme",
+      basic: "5 900 kr",
+      standard: "12 000 kr",
+      premium: "24 000 kr",
+      hourly: "450 kr/timme",
       description:
         "Designprojekt prissätts efter omfattning och antal revideringar. Kontakta oss för att diskutera dina designbehov.",
     },
@@ -122,10 +122,10 @@ const services = [
     ],
     technologies: ["Google Ads", "Meta Business Suite", "Mailchimp", "Google Analytics", "SEMrush", "HubSpot"],
     pricing: {
-      basic: "10 000 kr/mån",
-      standard: "25 000 kr/mån",
-      premium: "50 000 kr/mån",
-      hourly: "1 100 kr/timme",
+      basic: "3 900 kr/mån",
+      standard: "9 900 kr/mån",
+      premium: "19 900 kr/mån",
+      hourly: "450 kr/timme",
       description:
         "Digital marknadsföring erbjuds som månadsabonnemang eller projektbaserat. Kontakta oss för en skräddarsydd strategi.",
     },
@@ -146,10 +146,10 @@ const services = [
     ],
     technologies: ["Shopify", "WooCommerce", "Stripe", "Klarna", "Magento", "PrestaShop"],
     pricing: {
-      basic: "40 000 kr",
-      standard: "80 000 kr",
-      premium: "150 000 kr",
-      hourly: "1 200 kr/timme",
+      basic: "15 000 kr",
+      standard: "32 000 kr",
+      premium: "65 000 kr",
+      hourly: "500 kr/timme",
       description:
         "E-handelslösningar prissätts efter funktionalitet och integrationsbehov. Kontakta oss för en detaljerad offert.",
     },
