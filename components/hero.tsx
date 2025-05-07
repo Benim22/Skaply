@@ -67,10 +67,10 @@ export function Hero() {
             }}
           >
             <span className="inline-block py-1 px-3 mb-4 rounded-full bg-[#00ADB5]/20 border border-[#00ADB5]/30 text-[#00ADB5] text-sm">
-              Upptäck nästa generation av digitala lösningar
+              Upptäck Nästa Generation av Digitala Lösningar
             </span>
             <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold mb-6 md:mb-8 bg-clip-text text-transparent bg-gradient-to-r from-[#00ADB5] via-white to-[#E94560]">
-              Digitala lösningar för framtiden
+              Digitala Lösningar För Framtiden
             </h1>
           </motion.div>
 
@@ -86,7 +86,7 @@ export function Hero() {
             }}
           >
             <p className="text-base md:text-xl lg:text-2xl text-white mb-8 md:mb-10 max-w-3xl mx-auto leading-relaxed">
-              Vi hjälper företag att växa med innovativa digitala lösningar, från <span className="text-[#00ADB5]">webbapplikationer</span> och <span className="text-[#E94560]">mobilappar</span> till <span className="text-[#FFD460]">AI-driven utveckling</span> och <span className="text-[#0F3460]">skräddarsydd design</span>.
+              Vi hjälper företag att växa med innovativa digitala lösningar, från <span className="text-[#00ADB5]">Webbapplikationer</span> och <span className="text-[#E94560]">Mobilappar</span> till <span className="text-[#FFD460]">AI-driven utveckling</span> och <span className="text-[#0F3460]">Skräddarsydd design</span>.
             </p>
           </motion.div>
 

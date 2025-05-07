@@ -7,6 +7,7 @@ import { CookieConsent } from "@/components/cookie-consent"
 import { ProjectProvider } from "@/contexts/project-context"
 import "./globals.css"
 import Script from "next/script"
+import Head from 'next/head'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
   generator: 'v0.dev',
   metadataBase: new URL('https://www.skaply.se'),
   keywords: ['webbutveckling', 'apputveckling', 'AI-lösningar', 'design', 'digital marknadsföring', 'e-handel', 'Stockholm'],
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
   openGraph: {
     title: 'Skaply - Digitala lösningar för framtiden',
     description: 'Vi bygger framtidens digitala lösningar för webben, mobilen och AI. Med teknisk spets inom React, Next.js och Supabase hjälper vi företag att växa.',
@@ -39,6 +41,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="sv" suppressHydrationWarning>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+      </head>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
