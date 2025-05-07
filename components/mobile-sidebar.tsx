@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggle"
 import {
   Home,
   Layers,
@@ -17,7 +16,6 @@ import {
   Smartphone,
   Brain,
   Palette,
-  UserPlus,
   X,
   ExternalLink,
   Target,
@@ -212,11 +210,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
               </div>
 
               {/* Footer */}
-              <motion.div className="p-4 border-t border-border/50 space-y-4" variants={itemVariants}>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-foreground/70">Byt tema</p>
-                  <ThemeToggle />
-                </div>
+              <motion.div className="p-4 border-t border-border/50" variants={itemVariants}>
                 <motion.div
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}

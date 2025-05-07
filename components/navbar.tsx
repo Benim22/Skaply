@@ -5,7 +5,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 import { MobileSidebar } from "@/components/mobile-sidebar"
@@ -95,9 +94,6 @@ export function Navbar() {
                 </motion.div>
               ))}
               <motion.div variants={itemVariants}>
-                <ThemeToggle />
-              </motion.div>
-              <motion.div variants={itemVariants}>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
@@ -111,8 +107,7 @@ export function Navbar() {
             </nav>
 
             {/* Mobile Navigation Toggle */}
-            <div className="flex items-center md:hidden space-x-4">
-              <ThemeToggle />
+            <div className="flex items-center md:hidden">
               <Button variant="ghost" size="icon" onClick={toggleMenu} aria-label="Toggle Menu">
                 <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <Menu size={24} />

@@ -1,24 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { ExternalLink, Filter, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
-
-interface ProjectItem {
-  title: string
-  description: string
-  category: string
-  image: string
-  technologies: string[]
-  link: string
-  featured?: boolean
-  client?: string
-  year?: string
-}
+import { useProject, ProjectItem } from "@/contexts/project-context"
 
 const allProjects: ProjectItem[] = [
   {
@@ -111,6 +100,16 @@ const categories = [
 export function ProjectsPage() {
   const [activeCategory, setActiveCategory] = useState("Alla")
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null)
+  const { selectedProject: contextProject, shouldOpenModal, setShouldOpenModal } = useProject()
+  
+  useEffect(() => {
+    // Om ett projekt är valt via kontexten, öppna modalen för det projektet
+    if (contextProject && shouldOpenModal) {
+      setSelectedProject(contextProject)
+      setShouldOpenModal(false) // Återställ flaggan
+      document.body.style.overflow = 'hidden'
+    }
+  }, [contextProject, shouldOpenModal, setShouldOpenModal])
   
   const filteredProjects = allProjects.filter(project => {
     // Filter by category

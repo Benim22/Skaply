@@ -7,8 +7,20 @@ import { Button } from "@/components/ui/button"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import Link from "next/link"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { useProject, ProjectItem } from "@/contexts/project-context"
 
-const portfolioItems = [
+const portfolioItems: ProjectItem[] = [
+  {
+    title: "Barberhaus",
+    description: "Komplett webbplattform för premium barberupplevelse byggd med Next.js och Tailwind CSS. Responsiv design med bokningssystem och flerspråksstöd.",
+    category: "Webbutveckling",
+    image: "/barberhaus.png",
+    technologies: ["Next.js", "Tailwind CSS", "React", "Vercel"],
+    link: "https://barberhaus.vercel.app/",
+    client: "Barberhaus Stockholm",
+    year: "2023"
+  },
   {
     title: "TechFlow",
     description: "Modern e-handelsplattform för teknikprodukter med sömlös betalningsintegration och lagerhantering.",
@@ -16,6 +28,8 @@ const portfolioItems = [
     image: "/placeholder.jpg",
     technologies: ["React", "Next.js", "Supabase", "Stripe"],
     link: "#",
+    client: "TechFlow AB",
+    year: "2024"
   },
   {
     title: "Hälsa App",
@@ -44,6 +58,9 @@ const portfolioItems = [
 ]
 
 export function PortfolioSection() {
+  const router = useRouter()
+  const { setSelectedProject, setShouldOpenModal } = useProject()
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -63,6 +80,13 @@ export function PortfolioSection() {
         duration: 0.5,
       },
     },
+  }
+
+  const handleProjectClick = (item: ProjectItem, e: React.MouseEvent) => {
+    e.preventDefault()
+    setSelectedProject(item)
+    setShouldOpenModal(true)
+    router.push('/projekt')
   }
 
   return (
@@ -121,13 +145,14 @@ export function PortfolioSection() {
                   ))}
                 </div>
                 
-                <Link
-                  href={item.link}
+                <a
+                  href="#"
+                  onClick={(e) => handleProjectClick(item, e)}
                   className="inline-flex items-center text-[#00ADB5] hover:text-[#00ADB5]/80 transition-colors duration-300"
                 >
                   <span className="mr-1">Se projektet</span>
                   <ExternalLink size={16} />
-                </Link>
+                </a>
               </div>
             </motion.div>
           ))}

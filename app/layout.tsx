@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider"
 import { CookieConsent } from "@/components/cookie-consent"
+import { ProjectProvider } from "@/contexts/project-context"
 import "./globals.css"
 import Script from "next/script"
 
@@ -47,9 +48,11 @@ export default function RootLayout({
           forcedTheme={undefined}
           disableTransitionOnChange
         >
-          {children}
-          <Toaster />
-          <CookieConsent />
+          <ProjectProvider>
+            {children}
+            <Toaster />
+            <CookieConsent />
+          </ProjectProvider>
         </ThemeProvider>
         <Script id="schema-org" type="application/ld+json">
           {`
