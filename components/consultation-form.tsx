@@ -56,6 +56,7 @@ const formSchema = z.object({
 export function ConsultationForm() {
   const [step, setStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
   const [selectedService, setSelectedService] = useState("")
   const { toast } = useToast()
 
@@ -111,20 +112,45 @@ export function ConsultationForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      // Skicka data till vår e-post API
+      const response = await fetch('/api/email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      })
 
-    // Here you would normally send the data to your backend
-    console.log(values)
+      const data = await response.json()
 
-    toast({
-      title: "Tack för din konsultationsförfrågan!",
-      description: "Vi återkommer till dig inom kort med förslag på tid för en första konsultation.",
-    })
+      if (data.status === 'success') {
+        // Visa toast
+        toast({
+          title: "✅ Skickat!",
+          description: "Din konsultationsförfrågan har skickats framgångsrikt.",
+          variant: "default",
+          className: "bg-green-50 border-green-200 text-green-800",
+        })
 
-    form.reset()
-    setIsSubmitting(false)
-    setStep(1)
+        // Sätt success-state
+        setIsSuccess(true)
+        
+        // Återställ formuläret
+        form.reset()
+      } else {
+        throw new Error(data.message || 'Något gick fel')
+      }
+    } catch (error) {
+      console.error('Formulärfel:', error)
+      toast({
+        title: "❌ Ett fel uppstod",
+        description: "Vi kunde inte skicka din förfrågan. Vänligen försök igen senare eller kontakta oss direkt.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const transitions = {
@@ -204,11 +230,19 @@ export function ConsultationForm() {
   ]
 
   const additionalServiceOptions = [
-    { id: "seo", label: "SEO-optimering" },
-    { id: "content", label: "Innehållsproduktion" },
-    { id: "hosting", label: "Hosting och underhåll" },
-    { id: "analytics", label: "Analys och uppföljning" },
-    { id: "training", label: "Utbildning" },
+    { id: "seo", label: "SEO-optimering", description: "Optimera din webbplats för sökmotorer och öka din synlighet online." },
+    { id: "content", label: "Innehållsproduktion", description: "Professionellt innehåll som engagerar din målgrupp och ökar konverteringen." },
+    { id: "hosting", label: "Hosting och underhåll", description: "Säker och snabb hosting med kontinuerligt underhåll av din webbplats." },
+    { id: "analytics", label: "Analys och uppföljning", description: "Detaljerad analys av besöksbeteende och konverteringsoptimering." },
+    { id: "training", label: "Utbildning", description: "Skräddarsydda utbildningar för att hantera och underhålla din digitala närvaro." },
+    { id: "ai-chatbot", label: "AI-chattbot för kundservice", description: "Automatisera kundservice och support med en smart AI-chattbot som svarar på frågor dygnet runt." },
+    { id: "multilingual", label: "Flerspråksstöd", description: "Nå en internationell publik med professionell översättning av din webbplats." },
+    { id: "newsletter", label: "Nyhetsbrevssystem", description: "Effektiv e-postmarknadsföring med automatiserade kampanjer och analyser." },
+    { id: "booking", label: "Bokningssystem", description: "Online-bokningssystem för att hantera kundmöten, tjänster eller resurser." },
+    { id: "payment", label: "Betalningslösningar", description: "Säkra och flexibla betalningslösningar för att ta emot betalningar online." },
+    { id: "social-media", label: "Social media-integration", description: "Integrera sociala medier för ökad räckvidd och engagemang." },
+    { id: "security", label: "Säkerhetsoptimering", description: "Skydda din webbplats och dina kunders data med avancerade säkerhetslösningar." },
+    { id: "accessibility", label: "Tillgänglighetsanpassning", description: "Gör din webbplats tillgänglig för alla, inklusive personer med funktionsvariationer." }
   ]
 
   const timeframeOptions = [
@@ -267,446 +301,503 @@ export function ConsultationForm() {
         whileHover={{ boxShadow: "0 0 30px rgba(0, 173, 181, 0.1)" }}
         transition={{ duration: 0.5 }}
       >
-        {renderStepIndicator()}
+        {isSuccess ? (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-8"
+          >
+            <motion.div 
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ 
+                type: "spring",
+                stiffness: 300,
+                damping: 15,
+                delay: 0.2
+              }}
+              className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6"
+            >
+              <Check className="h-10 w-10" />
+            </motion.div>
+            
+            <h2 className="text-2xl font-bold mb-4">Tack för din förfrågan!</h2>
+            <p className="text-foreground/70 mb-8 max-w-md mx-auto">
+              Vi har mottagit din konsultationsförfrågan och återkommer till dig inom kort med ett förslag på tid för en första konsultation.
+            </p>
+            
+            <Button
+              onClick={() => {
+                setIsSuccess(false)
+                setStep(1)
+                setSelectedService("")
+              }}
+              className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white"
+            >
+              Skicka en ny förfrågan
+            </Button>
+          </motion.div>
+        ) : (
+          <>
+            {renderStepIndicator()}
 
-        <motion.div
-          key={`step-${step}`}
-          initial="initial"
-          animate="animate"
-          exit="exit"
-          variants={transitions}
-          className="space-y-6"
-        >
-          {step === 1 && (
-            <>
-              <motion.h2
-                className="text-2xl font-bold mb-6"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                Vad kan vi hjälpa dig med?
-              </motion.h2>
+            <motion.div
+              key={`step-${step}`}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={transitions}
+              className="space-y-6"
+            >
+              {step === 1 && (
+                <>
+                  <motion.h2
+                    className="text-2xl font-bold mb-6"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    Vad kan vi hjälpa dig med?
+                  </motion.h2>
 
-              <Form {...form}>
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {services.map((service) => {
-                      const Icon = service.icon
-                      return (
-                        <motion.div
-                          key={service.id}
-                          whileHover={{ scale: 1.03 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                          onClick={() => onServiceSelect(service.id)}
-                          className={`relative cursor-pointer rounded-lg border p-4
-                            ${
-                              selectedService === service.id
-                                ? "border-[#00ADB5] ring-2 ring-[#00ADB5]/30"
-                                : "border-border hover:border-[#00ADB5]/50"
-                            }`}
-                        >
-                          <div className="flex flex-col items-center text-center">
-                            <div
-                              className={`w-12 h-12 rounded-lg flex items-center justify-center mb-2 
+                  <Form {...form}>
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {services.map((service) => {
+                          const Icon = service.icon
+                          return (
+                            <motion.div
+                              key={service.id}
+                              whileHover={{ scale: 1.03 }}
+                              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                              onClick={() => onServiceSelect(service.id)}
+                              className={`relative cursor-pointer rounded-lg border p-4
                                 ${
                                   selectedService === service.id
-                                    ? "bg-[#00ADB5] text-white"
-                                    : "bg-[#00ADB5]/10 text-[#00ADB5]"
+                                    ? "border-[#00ADB5] ring-2 ring-[#00ADB5]/30"
+                                    : "border-border hover:border-[#00ADB5]/50"
                                 }`}
                             >
-                              <Icon className="h-6 w-6" />
-                            </div>
-                            <h3 className="font-medium">{service.title}</h3>
-                            <p className="text-sm text-foreground/70 mt-1 line-clamp-2">{service.description}</p>
-                          </div>
-                        </motion.div>
-                      )
-                    })}
-                  </div>
-
-                  {selectedService && (
-                    <AnimatePresence>
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="space-y-4"
-                      >
-                        <FormField
-                          control={form.control}
-                          name="serviceLevel"
-                          render={({ field }) => (
-                            <FormItem className="space-y-3">
-                              <FormLabel>Välj paketnivå</FormLabel>
-                              <FormDescription>
-                                Dessa är riktpriser. Vi kommer att skräddarsy en lösning efter dina behov.
-                              </FormDescription>
-                              <FormControl>
-                                <RadioGroup
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                                  className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                              <div className="flex flex-col items-center text-center">
+                                <div
+                                  className={`w-12 h-12 rounded-lg flex items-center justify-center mb-2 
+                                    ${
+                                      selectedService === service.id
+                                        ? "bg-[#00ADB5] text-white"
+                                        : "bg-[#00ADB5]/10 text-[#00ADB5]"
+                                    }`}
                                 >
-                                  {services
-                                    .find((s) => s.id === selectedService)
-                                    ?.levels.map((level) => (
-                                      <div key={level.id} className="flex items-center space-x-2">
-                                        <RadioGroupItem
-                                          value={level.id}
-                                          id={level.id}
-                                          className="peer sr-only"
-                                        />
-                                        <label
-                                          htmlFor={level.id}
-                                          className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-card/50 p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-[#00ADB5] [&:has([data-state=checked])]:border-primary w-full cursor-pointer"
-                                        >
-                                          <div className="font-semibold">{level.name}</div>
-                                          <div className="text-[#00ADB5]">{level.price}</div>
-                                        </label>
-                                      </div>
-                                    ))}
-                                </RadioGroup>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="projectStart"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>När vill du starta projektet?</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Välj tidsram" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {timeframeOptions.map((option) => (
-                                    <SelectItem key={option.id} value={option.id}>
-                                      {option.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="budget"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Budget</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Välj budgetram" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {budgetOptions.map((option) => (
-                                    <SelectItem key={option.id} value={option.id}>
-                                      {option.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="additionalServices"
-                          render={() => (
-                            <FormItem>
-                              <div className="mb-4">
-                                <FormLabel>Ytterligare tjänster</FormLabel>
-                                <FormDescription>Välj eventuella tilläggstjänster du är intresserad av.</FormDescription>
+                                  <Icon className="h-6 w-6" />
+                                </div>
+                                <h3 className="font-medium">{service.title}</h3>
+                                <p className="text-sm text-foreground/70 mt-1 line-clamp-2">{service.description}</p>
                               </div>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                {additionalServiceOptions.map((option) => (
-                                  <FormField
-                                    key={option.id}
-                                    control={form.control}
-                                    name="additionalServices"
-                                    render={({ field }) => {
-                                      return (
-                                        <FormItem
-                                          key={option.id}
-                                          className="flex flex-row items-start space-x-3 space-y-0"
-                                        >
-                                          <FormControl>
-                                            <Checkbox
-                                              checked={field.value?.includes(option.id)}
-                                              onCheckedChange={(checked) => {
-                                                return checked
-                                                  ? field.onChange([...(field.value || []), option.id])
-                                                  : field.onChange(
-                                                      field.value?.filter((value) => value !== option.id) || []
-                                                    )
-                                              }}
+                            </motion.div>
+                          )
+                        })}
+                      </div>
+
+                      {selectedService && (
+                        <AnimatePresence>
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="space-y-4"
+                          >
+                            <FormField
+                              control={form.control}
+                              name="serviceLevel"
+                              render={({ field }) => (
+                                <FormItem className="space-y-3">
+                                  <FormLabel>Välj paketnivå</FormLabel>
+                                  <FormDescription>
+                                    Dessa är riktpriser. Vi kommer att skräddarsy en lösning efter dina behov.
+                                  </FormDescription>
+                                  <FormControl>
+                                    <RadioGroup
+                                      onValueChange={field.onChange}
+                                      defaultValue={field.value}
+                                      className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                                    >
+                                      {services
+                                        .find((s) => s.id === selectedService)
+                                        ?.levels.map((level) => (
+                                          <div key={level.id} className="flex items-center space-x-2">
+                                            <RadioGroupItem
+                                              value={level.id}
+                                              id={level.id}
+                                              className="peer sr-only"
                                             />
-                                          </FormControl>
-                                          <FormLabel className="text-sm font-normal cursor-pointer">
-                                            {option.label}
-                                          </FormLabel>
-                                        </FormItem>
-                                      )
-                                    }}
-                                  />
-                                ))}
-                              </div>
-                            </FormItem>
-                          )}
-                        />
-                      </motion.div>
-                    </AnimatePresence>
-                  )}
-                </div>
-              </Form>
-            </>
-          )}
+                                            <label
+                                              htmlFor={level.id}
+                                              className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-card/50 p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-[#00ADB5] [&:has([data-state=checked])]:border-primary w-full cursor-pointer"
+                                            >
+                                              <div className="font-semibold">{level.name}</div>
+                                              <div className="text-[#00ADB5]">{level.price}</div>
+                                            </label>
+                                          </div>
+                                        ))}
+                                    </RadioGroup>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
 
-          {step === 2 && (
-            <>
-              <motion.h2
-                className="text-2xl font-bold mb-6"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                Berätta lite om dig
-              </motion.h2>
+                            <FormField
+                              control={form.control}
+                              name="projectStart"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>När vill du starta projektet?</FormLabel>
+                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Välj tidsram" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {timeframeOptions.map((option) => (
+                                        <SelectItem key={option.id} value={option.id}>
+                                          {option.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
 
-              <Form {...form}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Namn *</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Ditt namn"
-                            {...field}
-                            className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                            <FormField
+                              control={form.control}
+                              name="budget"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Budget</FormLabel>
+                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Välj budgetram" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {budgetOptions.map((option) => (
+                                        <SelectItem key={option.id} value={option.id}>
+                                          {option.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
 
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>E-post *</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="din.email@exempel.se"
-                            {...field}
-                            className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Telefon</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="070-123 45 67"
-                            {...field}
-                            className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="company"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Företag</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Ditt företag"
-                            {...field}
-                            className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="website"
-                    render={({ field }) => (
-                      <FormItem className="col-span-1 md:col-span-2">
-                        <FormLabel>Befintlig webbplats (om tillämpbart)</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="https://din-sida.se"
-                            {...field}
-                            className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </Form>
-            </>
-          )}
-
-          {step === 3 && (
-            <>
-              <motion.h2
-                className="text-2xl font-bold mb-6"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                Detaljer om ditt projekt
-              </motion.h2>
-
-              <Form {...form}>
-                <div className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="message"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Projektbeskrivning *</FormLabel>
-                        <FormDescription>
-                          Beskriv ditt projekt, dina mål och eventuella specifika krav eller önskemål.
-                        </FormDescription>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Beskriv ditt projekt här..."
-                            className="min-h-[150px] transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="bg-[#16213E]/30 rounded-lg p-4 flex items-start space-x-3">
-                    <div className="bg-[#00ADB5]/20 p-2 rounded-full">
-                      <CalendarDays className="h-5 w-5 text-[#00ADB5]" />
+                            <FormField
+                              control={form.control}
+                              name="additionalServices"
+                              render={() => (
+                                <FormItem>
+                                  <div className="mb-4">
+                                    <FormLabel>Tilläggstjänster</FormLabel>
+                                    <FormDescription>
+                                      Välj de tilläggstjänster du är intresserad av. Vår nya AI-chattbot och andra tjänster kan öka värdet på din digitala närvaro betydligt.
+                                    </FormDescription>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                    {additionalServiceOptions.map((option) => (
+                                      <FormField
+                                        key={option.id}
+                                        control={form.control}
+                                        name="additionalServices"
+                                        render={({ field }) => {
+                                          return (
+                                            <FormItem
+                                              key={option.id}
+                                              className="relative flex flex-col p-4 rounded-lg border border-border/50 hover:border-[#00ADB5]/50 transition-all duration-300"
+                                            >
+                                              <div className="flex flex-row items-start space-x-3 space-y-0">
+                                                <FormControl>
+                                                  <Checkbox
+                                                    checked={field.value?.includes(option.id)}
+                                                    onCheckedChange={(checked) => {
+                                                      return checked
+                                                        ? field.onChange([...(field.value || []), option.id])
+                                                        : field.onChange(
+                                                            field.value?.filter((value) => value !== option.id) || []
+                                                          )
+                                                    }}
+                                                    className="mt-1"
+                                                  />
+                                                </FormControl>
+                                                <div className="flex flex-col">
+                                                  <FormLabel className="font-medium cursor-pointer">
+                                                    {option.label}
+                                                  </FormLabel>
+                                                  <p className="text-xs text-foreground/70 mt-1">{option.description}</p>
+                                                </div>
+                                              </div>
+                                              {field.value?.includes(option.id) && (
+                                                <motion.div
+                                                  initial={{ opacity: 0 }}
+                                                  animate={{ opacity: 1 }}
+                                                  className="absolute -top-1 -right-1 bg-[#00ADB5] text-white p-1 rounded-full"
+                                                >
+                                                  <Check className="h-3 w-3" />
+                                                </motion.div>
+                                              )}
+                                            </FormItem>
+                                          )
+                                        }}
+                                      />
+                                    ))}
+                                  </div>
+                                </FormItem>
+                              )}
+                            />
+                          </motion.div>
+                        </AnimatePresence>
+                      )}
                     </div>
-                    <div className="text-sm">
-                      <p className="mb-1 font-medium">Efter inlämning av formuläret</p>
-                      <p className="text-foreground/70">
-                        Vi återkommer till dig inom 24 timmar för att boka ett gratis konsultationsmöte där vi diskuterar
-                        ditt projekt och nästa steg.
-                      </p>
+                  </Form>
+                </>
+              )}
+
+              {step === 2 && (
+                <>
+                  <motion.h2
+                    className="text-2xl font-bold mb-6"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    Berätta lite om dig
+                  </motion.h2>
+
+                  <Form {...form}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Namn *</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Ditt namn"
+                                {...field}
+                                className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>E-post *</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="din.email@exempel.se"
+                                {...field}
+                                className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Telefon</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="070-123 45 67"
+                                {...field}
+                                className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="company"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Företag</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Ditt företag"
+                                {...field}
+                                className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="website"
+                        render={({ field }) => (
+                          <FormItem className="col-span-1 md:col-span-2">
+                            <FormLabel>Befintlig webbplats (om tillämpbart)</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="https://din-sida.se"
+                                {...field}
+                                className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
-                  </div>
-                </div>
-              </Form>
-            </>
-          )}
-        </motion.div>
+                  </Form>
+                </>
+              )}
 
-        <div className="flex justify-between mt-8">
-          {step > 1 ? (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={prevStep}
-              className="border-[#00ADB5] text-[#00ADB5] hover:bg-[#00ADB5]/10"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Föregående
-            </Button>
-          ) : (
-            <div />
-          )}
+              {step === 3 && (
+                <>
+                  <motion.h2
+                    className="text-2xl font-bold mb-6"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    Detaljer om ditt projekt
+                  </motion.h2>
 
-          {step < 3 ? (
-            <Button
-              type="button"
-              onClick={nextStep}
-              className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white"
-              disabled={step === 1 && !selectedService}
-            >
-              Nästa
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          ) : (
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            >
-              <Button
-                type="button"
-                onClick={form.handleSubmit(onSubmit)}
-                className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center">
-                    <svg
-                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Skickar...
-                  </span>
-                ) : (
-                  <span className="flex items-center">
-                    <Send className="mr-2 h-4 w-4" />
-                    Skicka konsultationsförfrågan
-                  </span>
-                )}
-              </Button>
+                  <Form {...form}>
+                    <div className="space-y-6">
+                      <FormField
+                        control={form.control}
+                        name="message"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Projektbeskrivning *</FormLabel>
+                            <FormDescription>
+                              Beskriv ditt projekt, dina mål och eventuella specifika krav eller önskemål.
+                            </FormDescription>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Beskriv ditt projekt här..."
+                                className="min-h-[150px] transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="bg-[#16213E]/30 rounded-lg p-4 flex items-start space-x-3">
+                        <div className="bg-[#00ADB5]/20 p-2 rounded-full">
+                          <CalendarDays className="h-5 w-5 text-[#00ADB5]" />
+                        </div>
+                        <div className="text-sm">
+                          <p className="mb-1 font-medium">Efter inlämning av formuläret</p>
+                          <p className="text-foreground/70">
+                            Vi återkommer till dig inom 24 timmar för att boka ett gratis konsultationsmöte där vi diskuterar
+                            ditt projekt och nästa steg.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </Form>
+                </>
+              )}
             </motion.div>
-          )}
-        </div>
+
+            <div className="flex justify-between mt-8">
+              {step > 1 ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={prevStep}
+                  className="border-[#00ADB5] text-[#00ADB5] hover:bg-[#00ADB5]/10"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Föregående
+                </Button>
+              ) : (
+                <div />
+              )}
+
+              {step < 3 ? (
+                <Button
+                  type="button"
+                  onClick={nextStep}
+                  className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white"
+                  disabled={step === 1 && !selectedService}
+                >
+                  Nästa
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              ) : (
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <Button
+                    type="button"
+                    onClick={form.handleSubmit(onSubmit)}
+                    className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <span className="flex items-center">
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Skickar...
+                      </span>
+                    ) : (
+                      <span className="flex items-center">
+                        <Send className="mr-2 h-4 w-4" />
+                        Skicka konsultationsförfrågan
+                      </span>
+                    )}
+                  </Button>
+                </motion.div>
+              )}
+            </div>
+          </>
+        )}
       </motion.div>
     </motion.div>
   )

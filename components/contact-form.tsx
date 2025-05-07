@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
 import { motion } from "framer-motion"
-import { Send } from "lucide-react"
+import { Send, Check } from "lucide-react"
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -28,6 +28,7 @@ const formSchema = z.object({
 
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
   const { toast } = useToast()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -44,19 +45,45 @@ export function ContactForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      // Skicka data till vår e-post API
+      const response = await fetch('/api/contact-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
 
-    // Here you would normally send the data to Supabase or another backend
-    console.log(values)
+      const data = await response.json();
 
-    toast({
-      title: "Tack för ditt meddelande!",
-      description: "Vi återkommer till dig så snart som möjligt.",
-    })
+      if (data.status === 'success') {
+        // Visa toast
+        toast({
+          title: "✅ Skickat!",
+          description: "Ditt meddelande har skickats framgångsrikt.",
+          variant: "default",
+          className: "bg-green-50 border-green-200 text-green-800",
+        });
 
-    form.reset()
-    setIsSubmitting(false)
+        // Sätt success-state
+        setIsSuccess(true);
+        
+        // Återställ formuläret
+        form.reset();
+      } else {
+        throw new Error(data.message || 'Något gick fel');
+      }
+    } catch (error) {
+      console.error('Formulärfel:', error);
+      toast({
+        title: "❌ Ett fel uppstod",
+        description: "Vi kunde inte skicka ditt meddelande. Vänligen försök igen senare eller kontakta oss direkt.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const formVariants = {
@@ -95,190 +122,228 @@ export function ContactForm() {
         whileHover={{ boxShadow: "0 0 30px rgba(0, 173, 181, 0.1)" }}
         transition={{ duration: 0.5 }}
       >
-        <motion.h2
-          className="text-2xl font-bold mb-6"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          Kontakta oss
-        </motion.h2>
-        <motion.p
-          className="text-foreground/70 mb-6"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          Fyll i formuläret nedan för att komma i kontakt med oss. Vi återkommer så snart som möjligt.
-        </motion.p>
-
-        <Form {...form}>
-          <motion.form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6"
-            variants={formVariants}
-            initial="hidden"
-            animate="visible"
+        {isSuccess ? (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-8"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <motion.div variants={itemVariants}>
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Namn *</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Ditt namn"
-                          {...field}
-                          className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>E-post *</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="din.email@exempel.se"
-                          {...field}
-                          className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Telefon</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="070-123 45 67"
-                          {...field}
-                          className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <FormField
-                  control={form.control}
-                  name="company"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Företag</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Ditt företag"
-                          {...field}
-                          className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </motion.div>
-            </div>
-
-            <motion.div variants={itemVariants}>
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Meddelande *</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Beskriv vad du behöver hjälp med..."
-                        className="min-h-[120px] transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <motion.div 
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ 
+                type: "spring",
+                stiffness: 300,
+                damping: 15,
+                delay: 0.2
+              }}
+              className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6"
+            >
+              <Check className="h-10 w-10" />
             </motion.div>
+            
+            <h2 className="text-2xl font-bold mb-4">Tack för ditt meddelande!</h2>
+            <p className="text-foreground/70 mb-8 max-w-md mx-auto">
+              Vi har mottagit ditt meddelande och återkommer till dig så snart som möjligt.
+            </p>
+            
+            <Button
+              onClick={() => {
+                setIsSuccess(false);
+              }}
+              className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white"
+            >
+              Skicka ett nytt meddelande
+            </Button>
+          </motion.div>
+        ) : (
+          <>
+            <motion.h2
+              className="text-2xl font-bold mb-6"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              Kontakta oss
+            </motion.h2>
+            <motion.p
+              className="text-foreground/70 mb-6"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              Fyll i formuläret nedan för att komma i kontakt med oss. Vi återkommer så snart som möjligt.
+            </motion.p>
 
-            <motion.div variants={itemVariants}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            <Form {...form}>
+              <motion.form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+                variants={formVariants}
+                initial="hidden"
+                animate="visible"
               >
-                <Button
-                  type="submit"
-                  className="w-full bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center">
-                      <svg
-                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Skickar...
-                    </span>
-                  ) : (
-                    <span className="flex items-center">
-                      Skicka
-                      <motion.span
-                        className="inline-block ml-2"
-                        animate={{ x: [0, 5, 0] }}
-                        transition={{
-                          repeat: Number.POSITIVE_INFINITY,
-                          repeatType: "mirror",
-                          duration: 1.5,
-                          ease: "easeInOut",
-                        }}
-                      >
-                        <Send className="h-4 w-4" />
-                      </motion.span>
-                    </span>
-                  )}
-                </Button>
-              </motion.div>
-            </motion.div>
-          </motion.form>
-        </Form>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <motion.div variants={itemVariants}>
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Namn *</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Ditt namn"
+                              {...field}
+                              className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+
+                  <motion.div variants={itemVariants}>
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>E-post *</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="din.email@exempel.se"
+                              {...field}
+                              className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+
+                  <motion.div variants={itemVariants}>
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Telefon</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="070-123 45 67"
+                              {...field}
+                              className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+
+                  <motion.div variants={itemVariants}>
+                    <FormField
+                      control={form.control}
+                      name="company"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Företag</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Ditt företag"
+                              {...field}
+                              className="transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </motion.div>
+                </div>
+
+                <motion.div variants={itemVariants}>
+                  <FormField
+                    control={form.control}
+                    name="message"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Meddelande *</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Beskriv vad du behöver hjälp med..."
+                            className="min-h-[120px] transition-all duration-300 focus:border-[#00ADB5] focus:ring-[#00ADB5]/20"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </motion.div>
+
+                <motion.div variants={itemVariants}>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Button
+                      type="submit"
+                      className="w-full bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center">
+                          <svg
+                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Skickar...
+                        </span>
+                      ) : (
+                        <span className="flex items-center">
+                          Skicka
+                          <motion.span
+                            className="inline-block ml-2"
+                            animate={{ x: [0, 5, 0] }}
+                            transition={{
+                              repeat: Number.POSITIVE_INFINITY,
+                              repeatType: "mirror",
+                              duration: 1.5,
+                              ease: "easeInOut",
+                            }}
+                          >
+                            <Send className="h-4 w-4" />
+                          </motion.span>
+                        </span>
+                      )}
+                    </Button>
+                  </motion.div>
+                </motion.div>
+              </motion.form>
+            </Form>
+          </>
+        )}
       </motion.div>
     </motion.div>
   )
