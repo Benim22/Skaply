@@ -51,7 +51,7 @@ export function FAQSection() {
   }
 
   return (
-    <section className="py-16 bg-background">
+    <section id="faq" className="py-16 bg-background">
       <div className="container mx-auto px-4">
         <ScrollReveal>
           <div className="text-center mb-12">

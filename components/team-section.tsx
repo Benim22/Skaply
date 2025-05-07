@@ -3,22 +3,23 @@
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { Card, CardContent } from "@/components/ui/card"
-import { Github, Linkedin, Mail } from "lucide-react"
+import { Linkedin, Mail } from "lucide-react"
+import { FaGithub } from "react-icons/fa"
 
 const team = [
   {
-    name: "Lucas Andersson",
+    name: "Lucas Helmvik",
     role: "Grundare & Teknisk Ledare",
     bio: "Lucas har över 8 års erfarenhet av webbutveckling med fokus på React och Next.js. Han är passionerad om att skapa snabba, användarvänliga och tillgängliga webbapplikationer.",
     image: "/placeholder.svg?height=300&width=300",
     social: {
       linkedin: "#",
-      github: "#",
+      github: "https://github.com/Benim22",
       email: "lucas@skaply.se",
     },
   },
   {
-    name: "Daniel Svensson",
+    name: "Daniel Örnbåge",
     role: "Grundare & Kreativ Ledare",
     bio: "Daniel är en erfaren designer och utvecklare med öga för detaljer. Han specialiserar sig på UI/UX-design och frontend-utveckling, med fokus på att skapa vackra och funktionella användargränssnitt.",
     image: "/placeholder.svg?height=300&width=300",
@@ -93,6 +94,8 @@ export function TeamSection() {
                     href={member.social.linkedin}
                     className="text-foreground/60 hover:text-[#00ADB5]"
                     aria-label="LinkedIn"
+                    target="_blank"
+                    rel="noreferrer"
                   >
                     <Linkedin size={20} />
                   </a>
@@ -100,8 +103,10 @@ export function TeamSection() {
                     href={member.social.github}
                     className="text-foreground/60 hover:text-[#00ADB5]"
                     aria-label="GitHub"
+                    target="_blank"
+                    rel="noreferrer"
                   >
-                    <Github size={20} />
+                    <FaGithub size={20} />
                   </a>
                   <a
                     href={`mailto:${member.social.email}`}
