@@ -227,22 +227,30 @@ export function ServiceDetail() {
                     ))}
                   </ul>
 
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <Button asChild className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white">
-                      <Link href="/kontakt">
-                        Kontakta oss
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
+                  <div className="flex flex-col sm:flex-row gap-3 w-full">
+                    <motion.div 
+                      className="w-full"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    >
+                      <Button asChild className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white w-full">
+                        <Link href="/kontakt">
+                          Kontakta oss
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </motion.div>
 
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                    <motion.div 
+                      className="w-full"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       transition={{ type: "spring", stiffness: 400, damping: 17 }}
                     >
                       <Button
                         variant="outline"
-                        className="border-[#00ADB5] text-[#00ADB5] hover:bg-[#00ADB5]/10"
+                        className="border-[#00ADB5] text-[#00ADB5] hover:bg-[#00ADB5]/10 w-full"
                         onClick={() => handleOpenPriceDialog(service)}
                       >
                         <PiggyBank className="mr-2 h-4 w-4" />
