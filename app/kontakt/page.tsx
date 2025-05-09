@@ -61,7 +61,7 @@ export default function ContactPage() {
           <div className="mt-12 text-center">
             <h2 className="text-2xl font-bold mb-4">Föredrar du att prata direkt?</h2>
             <p className="text-foreground/70 mb-4">
-              Ring oss på <a href="tel:+46701234567" className="text-[#00ADB5] font-medium hover:underline">070-123 45 67</a> eller maila till{" "}
+              Ring oss på <a href="tel:+46762761784" className="text-[#00ADB5] font-medium hover:underline">076-276 17 84</a> eller maila till{" "}
               <a href="mailto:info@skaply.se" className="text-[#00ADB5] font-medium hover:underline">info@skaply.se</a>
             </p>
           </div>
