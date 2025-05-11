@@ -2,16 +2,55 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { ConsultationForm } from "@/components/consultation-form"
 import { Clock, CalendarDays, MessageSquare, PhoneCall } from "lucide-react"
+import { SeoSchema } from "@/components/seo-schema"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Kontakt & Konsultation | Skaply",
-  description: "Få en gratis konsultation för ditt digitala projekt. Vår expertis står till ditt förfogande.",
+  title: "Kontakta Skaply | Gratis Konsultation för Digitala Projekt | Webbutveckling",
+  description: "Kontakta Skaply för en kostnadsfri konsultation om ditt digitala projekt. Få skräddarsydda lösningar inom webbutveckling, appar, AI eller design från våra experter.",
+  keywords: [
+    'kontakta webbyrå', 
+    'digital konsultation', 
+    'kostnadsfritt möte webbdesign', 
+    'offert webbutveckling', 
+    'apputveckling kostnader',
+    'webbprojekt hjälp',
+    'digital utvecklingspartner',
+    'IT-konsultation Stockholm',
+    'webbapplikation konsult'
+  ],
+  openGraph: {
+    title: "Kontakta Skaply | Gratis Konsultation för Digitala Projekt | Webbutveckling",
+    description: "Kontakta Skaply för en kostnadsfri konsultation om ditt digitala projekt. Få skräddarsydda lösningar inom webbutveckling, appar, AI eller design från våra experter.",
+    url: "https://www.skaply.se/kontakt",
+    type: "website",
+    images: [
+      {
+        url: "https://www.skaply.se/images/kontakt-og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Kostnadsfri Konsultation - Skaply"
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kontakta Skaply | Gratis Konsultation för Digitala Projekt | Webbutveckling",
+    description: "Kontakta Skaply för en kostnadsfri konsultation om ditt digitala projekt. Få skräddarsydda lösningar inom webbutveckling, appar, AI eller design från våra experter.",
+    images: ["https://www.skaply.se/images/kontakt-og.jpg"]
+  }
 }
 
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-background">
+      <SeoSchema 
+        type="ContactPage"
+        name="Kontakta Skaply | Gratis Konsultation för Digitala Projekt"
+        description="Kontakta Skaply för en kostnadsfri konsultation om ditt digitala projekt. Få skräddarsydda lösningar inom webbutveckling, appar, AI eller design från våra experter."
+        url="https://www.skaply.se/kontakt"
+        image="https://www.skaply.se/images/kontakt-og.jpg"
+      />
       <Navbar />
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">

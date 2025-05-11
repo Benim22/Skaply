@@ -10,7 +10,7 @@ const team = [
   {
     name: "Lucas Helmvik",
     role: "Grundare & Teknisk Ledare",
-    bio: "Lucas har över 8 års erfarenhet av webbutveckling med fokus på React och Next.js. Han är passionerad om att skapa snabba, användarvänliga och tillgängliga webbapplikationer.",
+    bio: "Lucas ansvarar för den tekniska utvecklingen på Skaply och säkerställer att varje lösning lever upp till högsta krav på funktionalitet, skalbarhet och användarupplevelse. Med spetskompetens inom moderna teknologier såsom React, Next.js, TailwindCSS och Supabase utvecklar han skräddarsydda webblösningar, applikationer och AI-baserade system. Lucas har en analytisk och lösningsorienterad approach, och arbetar nära kunden för att omvandla idéer till stabila digitala produkter som skapar affärsvärde.",
     image: "/placeholder.svg?height=300&width=300",
     social: {
       linkedin: "#",
@@ -21,7 +21,7 @@ const team = [
   {
     name: "Daniel Örnbåge",
     role: "Grundare & Kreativ Ledare",
-    bio: "Daniel är en erfaren designer och utvecklare med öga för detaljer. Han specialiserar sig på UI/UX-design och frontend-utveckling, med fokus på att skapa vackra och funktionella användargränssnitt.",
+    bio: "Daniel är ansvarig för kunddialog, affärsutveckling och marknadsföring på Skaply. Han har en stark kommunikativ förmåga och en förståelse för hur man skapar värde genom tydlig positionering, strategisk design och varumärkesbyggande. Genom att agera bryggan mellan kund och utvecklingsteam säkerställer han att varje projekt drivs framåt effektivt, med rätt förväntningar och resultatfokus. Daniels arbete syftar till att stärka kundens digitala närvaro och långsiktiga konkurrenskraft.",
     image: "/placeholder.svg?height=300&width=300",
     social: {
       linkedin: "#",
@@ -63,8 +63,7 @@ export function TeamSection() {
       <div className="max-w-4xl mx-auto mb-12 text-center">
         <h2 className="text-2xl font-bold mb-4">Vårt Team</h2>
         <p className="text-foreground/70">
-          Möt personerna bakom Skaply. Vi är ett litet men dedikerat team med passion för att skapa digitala lösningar
-          som gör skillnad.
+        Bakom Skaply finns ett fokuserat och målinriktat team som kombinerar teknik, strategi och kreativitet för att skapa digitala lösningar med tydlig affärsnytta.
         </p>
       </div>
 

@@ -58,7 +58,7 @@ export function Footer() {
                 </a>
               </AnimatedIcon>
               <AnimatedIcon hoverScale={1.3} hoverRotate={5}>
-                <a href="#" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="Instagram">
+                <a href="https://www.instagram.com/skaply.se/" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="Instagram">
                   <Instagram size={20} />
                 </a>
               </AnimatedIcon>
@@ -138,12 +138,12 @@ export function Footer() {
               <li className="flex items-start group">
                 <MapPin className="mr-2 h-5 w-5 text-[#00ADB5] group-hover:scale-110 transition-transform duration-300" />
                 <span className="group-hover:text-white transition-colors duration-300">
-                  Teknikgatan 1, 12345 Stockholm
+                  Vårfruvägen 78-0, 231 96 Trelleborg
                 </span>
               </li>
               <li className="flex items-center group">
                 <Phone className="mr-2 h-5 w-5 text-[#00ADB5] group-hover:scale-110 transition-transform duration-300" />
-                <span className="group-hover:text-white transition-colors duration-300">070-123 45 67</span>
+                <span className="group-hover:text-white transition-colors duration-300">076-276 17 84</span>
               </li>
               <li className="flex items-center group">
                 <Mail className="mr-2 h-5 w-5 text-[#00ADB5] group-hover:scale-110 transition-transform duration-300" />

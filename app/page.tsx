@@ -8,10 +8,17 @@ import { CTA } from "@/components/cta"
 import { FAQSection } from "@/components/faq-section"
 import { PortfolioSection } from "@/components/portfolio-section"
 import { NewsletterSignup } from "@/components/newsletter-signup"
+import { SeoSchema } from "@/components/seo-schema"
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
+      <SeoSchema 
+        type="WebPage"
+        name="Skaply - Digitala lösningar för framtiden"
+        description="Skaply är en digital byrå som bygger framtidens lösningar för webben, mobilen och AI med teknisk spets inom React, Next.js och Supabase."
+        url="https://www.skaply.se"
+      />
       <Navbar />
       <main>
         <Hero />
