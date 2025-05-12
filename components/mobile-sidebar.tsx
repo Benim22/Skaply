@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -128,9 +129,14 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                 variants={itemVariants}
               >
                 <Link href="/" className="flex items-center" onClick={onClose}>
-                  <span className="text-2xl font-bold bg-gradient-to-r from-[#00ADB5] to-[#E94560] bg-clip-text text-transparent">
-                    Skaply
-                  </span>
+                  <Image 
+                    src="/skaply_logo.png" 
+                    alt="Skaply Logo" 
+                    width={100} 
+                    height={35} 
+                    className="h-auto"
+                    priority
+                  />
                 </Link>
                 <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full">
                   <X className="h-5 w-5" />

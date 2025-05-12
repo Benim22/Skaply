@@ -3,13 +3,17 @@
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { Card, CardContent } from "@/components/ui/card"
-import { Lightbulb, Target, Users } from "lucide-react"
+import { Lightbulb, Target, Users, ChevronDown, ChevronUp } from "lucide-react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 
 export function VisionSection() {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   })
+  
+  const [showFullVisionText, setShowFullVisionText] = useState(false)
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -31,6 +35,12 @@ export function VisionSection() {
       },
     },
   }
+  
+  const visionTextShort = "Vi strävar efter att bli den ledande digitala partnern för innovativa företag i Sverige. Genom att kombinera teknisk expertis med kreativitet vill vi hjälpa våra kunder att inte bara möta dagens utmaningar, utan också vara redo för morgondagens möjligheter."
+
+  const visionTextFull = `Vi strävar efter att bli den ledande digitala partnern för innovativa företag i Sverige. Genom att kombinera teknisk expertis med kreativitet vill vi hjälpa våra kunder att inte bara möta dagens utmaningar, utan också vara redo för morgondagens möjligheter.
+
+Vår vision är att skapa digitala lösningar som är hållbara, skalbara och som verkligen gör skillnad för våra kunder och deras användare. Vi tror på att teknologi, när den används rätt, kan förbättra människors liv och hjälpa företag att nå sin fulla potential.`
 
   return (
     <section className="py-12">
@@ -97,16 +107,39 @@ export function VisionSection() {
 
       <div className="mt-12 p-6 bg-[#16213E]/50 rounded-lg border border-[#0F3460]/30">
         <h3 className="text-xl font-bold mb-4">Vår långsiktiga vision</h3>
-        <p className="text-foreground/80 mb-4">
-          Vi strävar efter att bli den ledande digitala partnern för innovativa företag i Sverige. Genom att kombinera
-          teknisk expertis med kreativitet vill vi hjälpa våra kunder att inte bara möta dagens utmaningar, utan också
-          vara redo för morgondagens möjligheter.
-        </p>
-        <p className="text-foreground/80">
-          Vår vision är att skapa digitala lösningar som är hållbara, skalbara och som verkligen gör skillnad för våra
-          kunder och deras användare. Vi tror på att teknologi, när den används rätt, kan förbättra människors liv och
-          hjälpa företag att nå sin fulla potential.
-        </p>
+        
+        {/* Mobil visning med läs mer-funktion */}
+        <div className="md:hidden">
+          <p className="text-foreground/80 whitespace-pre-line">
+            {showFullVisionText ? visionTextFull : visionTextShort}
+          </p>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setShowFullVisionText(!showFullVisionText)} 
+            className="flex items-center text-[#00ADB5] hover:text-[#00ADB5] p-0 h-auto mt-2"
+          >
+            {showFullVisionText ? (
+              <>Visa mindre <ChevronUp className="ml-1 h-4 w-4" /></>
+            ) : (
+              <>Läs mer <ChevronDown className="ml-1 h-4 w-4" /></>
+            )}
+          </Button>
+        </div>
+        
+        {/* Desktop visning med full text */}
+        <div className="hidden md:block">
+          <p className="text-foreground/80 mb-4">
+            Vi strävar efter att bli den ledande digitala partnern för innovativa företag i Sverige. Genom att kombinera
+            teknisk expertis med kreativitet vill vi hjälpa våra kunder att inte bara möta dagens utmaningar, utan också
+            vara redo för morgondagens möjligheter.
+          </p>
+          <p className="text-foreground/80">
+            Vår vision är att skapa digitala lösningar som är hållbara, skalbara och som verkligen gör skillnad för våra
+            kunder och deras användare. Vi tror på att teknologi, när den används rätt, kan förbättra människors liv och
+            hjälpa företag att nå sin fulla potential.
+          </p>
+        </div>
       </div>
     </section>
   )

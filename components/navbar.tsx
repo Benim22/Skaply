@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -71,9 +72,14 @@ export function Navbar() {
           <div className="flex items-center justify-between h-16">
             <motion.div variants={itemVariants}>
               <Link href="/" className="flex items-center">
-                <span className="text-2xl font-bold bg-gradient-to-r from-[#00ADB5] to-[#E94560] bg-clip-text text-transparent">
-                  Skaply
-                </span>
+                <Image 
+                  src="/skaply_logo.png" 
+                  alt="Skaply Logo" 
+                  width={120} 
+                  height={40} 
+                  className="h-auto"
+                  priority
+                />
               </Link>
             </motion.div>
 

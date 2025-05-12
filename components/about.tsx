@@ -26,12 +26,11 @@ export function About() {
               <div className="relative bg-[#16213E] rounded-lg p-6 md:p-8 border border-[#0F3460]/30 hover:border-[#00ADB5]/50 transition-colors duration-500">
                 <h2 className="text-3xl md:text-4xl font-bold mb-6">Om Skaply</h2>
                 <p className="text-foreground/80 mb-4">
-                  Skaply är en digital byrå grundad av Lucas och Daniel, två passionerade utvecklare med en vision om
-                  att skapa digitala lösningar som gör skillnad.
+                Vi är Skaply – en modern digital byrå grundad av Lucas och Daniel.
+                Med smart teknik, effektiv design och tydligt affärsfokus hjälper vi företag att ta sina digitala idéer till nästa nivå.
                 </p>
                 <p className="text-foreground/80 mb-6">
-                  Med vår tekniska expertis inom React, Next.js och Supabase hjälper vi företag att bygga moderna,
-                  snabba och användarvänliga digitala produkter.
+                React, Next.js och Supabase är våra huvudsakliga verktyg – men vår styrka ligger i att förstå helheten och leverera lösningar som gör skillnad.
                 </p>
                 <motion.div
                   whileHover={{ scale: 1.05 }}

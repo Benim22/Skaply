@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { motion } from "framer-motion"
@@ -10,9 +10,23 @@ import { useTheme } from "next-themes"
 export function Hero() {
   const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
     setMounted(true)
+
+    // Säkerställ att videon loopas
+    const videoElement = videoRef.current
+    if (videoElement) {
+      videoElement.loop = true
+      
+      // Om videon slutar spela, starta om den
+      videoElement.addEventListener('ended', () => {
+        videoElement.play().catch(error => {
+          console.error('Video playback failed:', error)
+        })
+      })
+    }
   }, [])
 
   if (!mounted) return null
@@ -23,13 +37,18 @@ export function Hero() {
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-black/60 z-10" />
         <video
+          ref={videoRef}
           autoPlay
           loop
           muted
           playsInline
+          preload="auto"
           className="w-full h-full object-cover"
+          onError={(e) => console.error('Video error:', e)}
         >
           <source src="https://videos.pexels.com/video-files/946146/946146-hd_1920_1080_30fps.mp4" type="video/mp4" />
+          {/* Alternativ källa om den första inte fungerar */}
+          <source src="https://cdn.pixabay.com/vimeo/328240476/digital-network-24227.mp4" type="video/mp4" />
         </video>
       </div>
 

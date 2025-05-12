@@ -2,13 +2,17 @@
 
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
-import { MessageSquare, Lightbulb, Code, Rocket, BarChart } from "lucide-react"
+import { MessageSquare, Lightbulb, Code, Rocket, BarChart, ChevronDown, ChevronUp } from "lucide-react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 
 export function ProcessSection() {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   })
+  
+  const [showFullAgileText, setShowFullAgileText] = useState(false)
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -64,6 +68,12 @@ export function ProcessSection() {
     },
   ]
 
+  const agileTextShort = "Vi arbetar enligt agila principer med regelbundna avstämningar och iterationer. Detta ger dig som kund full insyn i projektet och möjlighet att påverka under hela utvecklingsprocessen."
+
+  const agileTextFull = `Vi arbetar enligt agila principer med regelbundna avstämningar och iterationer. Detta ger dig som kund full insyn i projektet och möjlighet att påverka under hela utvecklingsprocessen.
+
+Genom att arbeta i korta sprintar kan vi snabbt anpassa oss till förändrade krav och prioriteringar, vilket resulterar i en slutprodukt som verkligen möter dina behov.`
+
   return (
     <section className="py-12">
       <div className="max-w-4xl mx-auto mb-12 text-center">
@@ -99,14 +109,37 @@ export function ProcessSection() {
 
       <div className="mt-12 p-6 bg-[#16213E]/50 rounded-lg border border-[#0F3460]/30">
         <h3 className="text-xl font-bold mb-4">Agil utvecklingsmetodik</h3>
-        <p className="text-foreground/80 mb-4">
-          Vi arbetar enligt agila principer med regelbundna avstämningar och iterationer. Detta ger dig som kund full
-          insyn i projektet och möjlighet att påverka under hela utvecklingsprocessen.
-        </p>
-        <p className="text-foreground/80">
-          Genom att arbeta i korta sprintar kan vi snabbt anpassa oss till förändrade krav och prioriteringar, vilket
-          resulterar i en slutprodukt som verkligen möter dina behov.
-        </p>
+        
+        {/* Mobil visning med läs mer-funktion */}
+        <div className="md:hidden">
+          <p className="text-foreground/80 whitespace-pre-line">
+            {showFullAgileText ? agileTextFull : agileTextShort}
+          </p>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setShowFullAgileText(!showFullAgileText)} 
+            className="flex items-center text-[#00ADB5] hover:text-[#00ADB5] p-0 h-auto mt-2"
+          >
+            {showFullAgileText ? (
+              <>Visa mindre <ChevronUp className="ml-1 h-4 w-4" /></>
+            ) : (
+              <>Läs mer <ChevronDown className="ml-1 h-4 w-4" /></>
+            )}
+          </Button>
+        </div>
+        
+        {/* Desktop visning med full text */}
+        <div className="hidden md:block">
+          <p className="text-foreground/80 mb-4">
+            Vi arbetar enligt agila principer med regelbundna avstämningar och iterationer. Detta ger dig som kund full
+            insyn i projektet och möjlighet att påverka under hela utvecklingsprocessen.
+          </p>
+          <p className="text-foreground/80">
+            Genom att arbeta i korta sprintar kan vi snabbt anpassa oss till förändrade krav och prioriteringar, vilket
+            resulterar i en slutprodukt som verkligen möter dina behov.
+          </p>
+        </div>
       </div>
     </section>
   )
