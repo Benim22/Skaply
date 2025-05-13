@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Twitter } from "lucide-react"
 import { AnimatedLink } from "@/components/ui/animated-link"
 import { AnimatedIcon } from "@/components/ui/animated-icon"
@@ -39,9 +40,13 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <motion.div variants={itemVariants}>
             <Link href="/" className="flex items-center mb-4">
-              <span className="text-2xl font-bold bg-gradient-to-r from-[#00ADB5] to-[#E94560] bg-clip-text text-transparent">
-                Skaply
-              </span>
+              <Image 
+                src="/skaply_logo.png" 
+                alt="Skaply Logo" 
+                width={120} 
+                height={40} 
+                className="h-auto"
+              />
             </Link>
             <p className="mb-4">
               Digitala lösningar för framtiden. Vi hjälper företag att växa med modern teknik och kreativ design.
