@@ -11,23 +11,71 @@ export function Hero() {
   const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
   const videoRef = useRef<HTMLVideoElement>(null)
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
   useEffect(() => {
     setMounted(true)
 
-    // Säkerställ att videon loopas
+    // Funktion för att hantera uppspelning av video
+    const handleVideoPlay = async () => {
+      const videoElement = videoRef.current
+      if (videoElement) {
+        try {
+          videoElement.loop = true
+          videoElement.muted = true
+          videoElement.playsInline = true
+          
+          // Försök spela upp videon
+          await videoElement.play()
+          setIsVideoPlaying(true)
+          console.log('Video started playing successfully')
+        } catch (error) {
+          console.error('Autoplay failed:', error)
+          
+          // Om autoplay misslyckas, försök igen vid användarinteraktion
+          const playOnInteraction = () => {
+            videoElement.play()
+              .then(() => {
+                setIsVideoPlaying(true)
+                console.log('Video started playing after user interaction')
+                
+                // Ta bort event listeners efter lyckad uppspelning
+                document.removeEventListener('touchstart', playOnInteraction)
+                document.removeEventListener('click', playOnInteraction)
+              })
+              .catch(err => console.error('Play after interaction failed:', err))
+          }
+          
+          document.addEventListener('touchstart', playOnInteraction, { once: true })
+          document.addEventListener('click', playOnInteraction, { once: true })
+        }
+      }
+    }
+    
+    // Starta uppspelningen när komponenten har monterats
+    if (mounted) {
+      handleVideoPlay()
+    }
+    
+    // Lägg till event listener för när videon slutar
     const videoElement = videoRef.current
     if (videoElement) {
-      videoElement.loop = true
-      
-      // Om videon slutar spela, starta om den
       videoElement.addEventListener('ended', () => {
+        // Försök starta om videon när den slutar
+        videoElement.currentTime = 0
         videoElement.play().catch(error => {
-          console.error('Video playback failed:', error)
+          console.error('Video restart failed:', error)
         })
       })
     }
-  }, [])
+    
+    // Cleanup funktion
+    return () => {
+      if (videoElement) {
+        videoElement.removeEventListener('ended', () => {})
+      }
+    }
+  }, [mounted])
 
   if (!mounted) return null
 
@@ -45,6 +93,13 @@ export function Hero() {
           preload="auto"
           className="w-full h-full object-cover"
           onError={(e) => console.error('Video error:', e)}
+          onCanPlay={() => {
+            if (videoRef.current && !isVideoPlaying) {
+              videoRef.current.play()
+                .then(() => setIsVideoPlaying(true))
+                .catch(err => console.error('onCanPlay autoplay failed:', err))
+            }
+          }}
         >
           <source src="https://videos.pexels.com/video-files/946146/946146-hd_1920_1080_30fps.mp4" type="video/mp4" />
           {/* Alternativ källa om den första inte fungerar */}
@@ -73,7 +128,7 @@ export function Hero() {
       </div>
 
       {/* Content */}
-      <div className="container relative z-10 mx-auto px-4 h-full flex flex-col items-center justify-center">
+      <div className="container relative z-10 mx-auto px-4 h-full flex flex-col items-center justify-center pt-16 md:pt-0">
         <div className="max-w-5xl mx-auto text-center px-4">
           {/* Header */}
           <motion.div
@@ -85,10 +140,10 @@ export function Hero() {
               stiffness: 100,
             }}
           >
-            <span className="inline-block py-1 px-3 mb-4 rounded-full bg-[#00ADB5]/20 border border-[#00ADB5]/30 text-[#00ADB5] text-sm">
+            <span className="hidden md:inline-block py-1 px-3 mb-4 rounded-full bg-[#00ADB5]/20 border border-[#00ADB5]/30 text-[#00ADB5] text-sm">
               Upptäck Nästa Generation av Digitala Lösningar
             </span>
-            <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold mb-6 md:mb-8 bg-clip-text text-transparent bg-gradient-to-r from-[#00ADB5] via-white to-[#E94560]">
+            <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold mb-6 md:mb-8 bg-clip-text text-transparent bg-gradient-to-r from-[#00ADB5] via-white to-[#E94560] mt-10 md:mt-0">
               Digitala Lösningar För Framtiden
             </h1>
           </motion.div>
