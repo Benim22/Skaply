@@ -17,7 +17,7 @@ export function SeoSchema({
   name,
   description,
   url,
-  image = "https://www.skaply.se/logo.png",
+  image = "https://www.skaply.se/skaply_logo.png",
   datePublished = new Date().toISOString(),
   dateModified = new Date().toISOString()
 }: SeoSchemaProps) {
@@ -42,7 +42,7 @@ export function SeoSchema({
       name: "Skaply",
       logo: {
         "@type": "ImageObject",
-        url: "https://www.skaply.se/logo.png",
+        url: "https://www.skaply.se/skaply_logo.png",
       },
     }
   }

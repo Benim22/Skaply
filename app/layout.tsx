@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://www.skaply.se/og-image.jpg',
+        url: 'https://www.skaply.se/link_preview.png',
         width: 1200,
         height: 630,
         alt: 'Skaply - Digitala lösningar för framtiden'
@@ -77,7 +77,7 @@ export const metadata: Metadata = {
     title: 'Skaply - Sveriges ledande digitalbyrå för framtidens digitala lösningar',
     description: 'Vi levererar moderna webbplatser, mobilappar och AI-lösningar med teknisk spetskompetens inom React, Next.js och Supabase. Boka ett kostnadsfritt möte idag!',
     images: [
-      'https://www.skaply.se/twitter-image.jpg'
+      'https://www.skaply.se/link_preview.png'
     ],
     creator: '@skaply',
     site: '@skaply'
@@ -137,7 +137,7 @@ export default function RootLayout({
               "url": "https://www.skaply.se",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://www.skaply.se/logo.png",
+                "url": "https://www.skaply.se/skaply_logo.png",
                 "width": "512",
                 "height": "512"
               },
@@ -360,7 +360,7 @@ export default function RootLayout({
               "@type": "LocalBusiness",
               "@id": "https://www.skaply.se/#localbusiness",
               "name": "Skaply Digitalbyrå",
-              "image": "https://www.skaply.se/images/office.jpg",
+              "image": "https://www.skaply.se/link_preview.png",
               "url": "https://www.skaply.se",
               "telephone": "+46-70-123-45-67",
               "priceRange": "$$",

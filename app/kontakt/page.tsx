@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://www.skaply.se/images/kontakt-og.jpg",
+        url: "https://www.skaply.se/link_preview.png",
         width: 1200,
         height: 630,
         alt: "Kostnadsfri Konsultation - Skaply"
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Kontakta Skaply | Gratis Konsultation för Digitala Projekt | Webbutveckling",
     description: "Kontakta Skaply för en kostnadsfri konsultation om ditt digitala projekt. Få skräddarsydda lösningar inom webbutveckling, appar, AI eller design från våra experter.",
-    images: ["https://www.skaply.se/images/kontakt-og.jpg"]
+    images: ["https://www.skaply.se/link_preview.png"]
   }
 }
 

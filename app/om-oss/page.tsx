@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://www.skaply.se/images/team-og.jpg",
+        url: "https://www.skaply.se/link_preview.png",
         width: 1200,
         height: 630,
         alt: "Skaply - Expertteam inom Webbdesign"
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Om Skaply | Din Partner för Digital Transformation | Expertteam inom Webbdesign",
     description: "Möt teamet bakom Skaply - en ledande digitalbyrå med passion för innovation. Vi kombinerar teknisk expertis med kreativitet för att skapa framtidens digitala upplevelser.",
-    images: ["https://www.skaply.se/images/team-og.jpg"]
+    images: ["https://www.skaply.se/link_preview.png"]
   }
 }
 
@@ -50,7 +50,7 @@ export default function AboutPage() {
         name="Om Skaply | Din Partner för Digital Transformation"
         description="Möt teamet bakom Skaply - en ledande digitalbyrå med passion för innovation. Vi kombinerar teknisk expertis med kreativitet för att skapa framtidens digitala upplevelser."
         url="https://www.skaply.se/om-oss"
-        image="https://www.skaply.se/images/team-og.jpg"
+        image="https://www.skaply.se/link_preview.png"
       />
       <Navbar />
       <main className="container mx-auto px-4 py-12">

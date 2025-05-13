@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://www.skaply.se/images/portfolio-og.jpg",
+        url: "https://www.skaply.se/link_preview.png",
         width: 1200,
         height: 630,
         alt: "Skaply - Portfolio och Case Studies"
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Portfolio & Case Studies | Framgångsrika Digitala Projekt av Skaply",
     description: "Utforska Skaplys portfolio av framgångsrika digitala projekt. Se exempel på våra moderna webbplatser, appar, AI-lösningar och e-handelslösningar.",
-    images: ["https://www.skaply.se/images/portfolio-og.jpg"]
+    images: ["https://www.skaply.se/link_preview.png"]
   }
 }
 

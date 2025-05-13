@@ -12,86 +12,99 @@ export function Hero() {
   const { theme } = useTheme()
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+  const [hasInteracted, setHasInteracted] = useState(false)
+
+  // Funktion för att starta videouppspelning
+  const startVideo = () => {
+    const videoElement = videoRef.current
+    if (!videoElement || isVideoPlaying) return
+
+    try {
+      // Säkerställ att alla nödvändiga attribut är satta
+      videoElement.loop = true
+      videoElement.muted = true
+      videoElement.playsInline = true
+      videoElement.setAttribute('playsinline', '')
+      videoElement.setAttribute('webkit-playsinline', '')
+      videoElement.setAttribute('muted', '')
+      videoElement.setAttribute('autoplay', '')
+
+      // Försök spela upp videon
+      const playPromise = videoElement.play()
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsVideoPlaying(true)
+            console.log('Video started playing successfully')
+          })
+          .catch(error => {
+            console.error('Autoplay failed:', error)
+          })
+      }
+    } catch (error) {
+      console.error('Video play error:', error)
+    }
+  }
+
+  // Hantera interaktioner för att starta video
+  const handleUserInteraction = () => {
+    if (hasInteracted) return
+    setHasInteracted(true)
+    startVideo()
+  }
 
   useEffect(() => {
     setMounted(true)
 
-    // Funktion för att hantera uppspelning av video
-    const handleVideoPlay = async () => {
-      const videoElement = videoRef.current
-      if (videoElement) {
-        try {
-          // Sätt alla nödvändiga attribut för mobil uppspelning
-          videoElement.loop = true
-          videoElement.muted = true
-          videoElement.playsInline = true
-          videoElement.setAttribute('playsinline', '')
-          videoElement.setAttribute('webkit-playsinline', '')
-          videoElement.setAttribute('muted', '')
-          
-          // Försök spela upp videon
-          const playPromise = videoElement.play()
-          
-          if (playPromise !== undefined) {
-            playPromise
-              .then(() => {
-                setIsVideoPlaying(true)
-                console.log('Video started playing successfully')
-              })
-              .catch(error => {
-                console.error('Autoplay failed:', error)
-                
-                // Om autoplay misslyckas, försök igen vid användarinteraktion
-                const playOnInteraction = () => {
-                  videoElement.play()
-                    .then(() => {
-                      setIsVideoPlaying(true)
-                      console.log('Video started playing after user interaction')
-                      
-                      // Ta bort event listeners efter lyckad uppspelning
-                      document.removeEventListener('touchstart', playOnInteraction)
-                      document.removeEventListener('click', playOnInteraction)
-                      document.removeEventListener('scroll', playOnInteraction)
-                    })
-                    .catch(err => console.error('Play after interaction failed:', err))
-                }
-                
-                document.addEventListener('touchstart', playOnInteraction, { once: true })
-                document.addEventListener('click', playOnInteraction, { once: true })
-                document.addEventListener('scroll', playOnInteraction, { once: true })
-              })
-          }
-        } catch (error) {
-          console.error('Video setup failed:', error)
-        }
-      }
-    }
-    
-    // Starta uppspelningen när komponenten har monterats
+    // Starta video när komponenten har monterats
     if (mounted) {
       // Kort timeout för att säkerställa att DOM är helt redo
-      setTimeout(handleVideoPlay, 100)
+      const timer = setTimeout(() => {
+        startVideo()
+      }, 100)
+
+      return () => clearTimeout(timer)
+    }
+  }, [mounted])
+
+  // Lägg till event listeners för användarinteraktioner
+  useEffect(() => {
+    if (!mounted) return
+
+    const events = ['touchstart', 'click', 'scroll', 'keydown']
+    
+    const handleInteraction = () => {
+      handleUserInteraction()
+      
+      // Ta bort alla event listeners efter första interaktionen
+      events.forEach(event => {
+        document.removeEventListener(event, handleInteraction)
+      })
     }
     
-    // Lägg till event listener för när videon slutar
+    // Lägg till event listeners
+    events.forEach(event => {
+      document.addEventListener(event, handleInteraction, { once: true })
+    })
+    
+    // Hantera video loop och återstart
     const videoElement = videoRef.current
     if (videoElement) {
-      videoElement.addEventListener('ended', () => {
-        // Försök starta om videon när den slutar
+      const handleEnded = () => {
         videoElement.currentTime = 0
         videoElement.play().catch(error => {
           console.error('Video restart failed:', error)
         })
-      })
-    }
-    
-    // Cleanup funktion
-    return () => {
-      if (videoElement) {
-        videoElement.removeEventListener('ended', () => {})
-        document.removeEventListener('touchstart', () => {})
-        document.removeEventListener('click', () => {})
-        document.removeEventListener('scroll', () => {})
+      }
+      
+      videoElement.addEventListener('ended', handleEnded)
+      
+      return () => {
+        // Cleanup
+        videoElement.removeEventListener('ended', handleEnded)
+        events.forEach(event => {
+          document.removeEventListener(event, handleInteraction)
+        })
       }
     }
   }, [mounted])
@@ -112,24 +125,14 @@ export function Hero() {
           preload="auto"
           className="w-full h-full object-cover"
           onError={(e) => console.error('Video error:', e)}
-          onCanPlay={() => {
-            if (videoRef.current && !isVideoPlaying) {
-              videoRef.current.play()
-                .then(() => setIsVideoPlaying(true))
-                .catch(err => console.error('onCanPlay autoplay failed:', err))
-            }
-          }}
-          onTouchStart={() => {
-            if (videoRef.current && !isVideoPlaying) {
-              videoRef.current.play()
-                .then(() => setIsVideoPlaying(true))
-                .catch(err => console.error('Touch autoplay failed:', err))
-            }
-          }}
+          onCanPlay={() => startVideo()}
+          onTouchStart={() => handleUserInteraction()}
+          onClick={() => handleUserInteraction()}
         >
           <source src="https://videos.pexels.com/video-files/946146/946146-hd_1920_1080_30fps.mp4" type="video/mp4" />
           {/* Alternativ källa om den första inte fungerar */}
           <source src="https://cdn.pixabay.com/vimeo/328240476/digital-network-24227.mp4" type="video/mp4" />
+          Din webbläsare stöder inte HTML5-video.
         </video>
       </div>
 
@@ -186,7 +189,7 @@ export function Hero() {
             }}
           >
             <p className="text-base md:text-xl lg:text-2xl text-white mb-8 md:mb-10 max-w-3xl mx-auto leading-relaxed">
-              Vi hjälper företag att växa med innovativa digitala lösningar, från <span className="text-[#00ADB5]">Webbapplikationer</span> och <span className="text-[#E94560]">Mobilappar</span> till <span className="text-[#FFD460]">AI-driven utveckling</span> och <span className="text-[#0F3460]">Skräddarsydd design</span>.
+              Vi hjälper företag att växa med innovativa digitala lösningar, från <span>Webbapplikationer</span> och <span>Mobilappar</span> till <span>AI-driven utveckling</span> och <span>Skräddarsydd design</span>.
             </p>
           </motion.div>
 
