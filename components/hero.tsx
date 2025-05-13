@@ -21,40 +21,56 @@ export function Hero() {
       const videoElement = videoRef.current
       if (videoElement) {
         try {
+          // Sätt alla nödvändiga attribut för mobil uppspelning
           videoElement.loop = true
           videoElement.muted = true
           videoElement.playsInline = true
+          videoElement.setAttribute('playsinline', '')
+          videoElement.setAttribute('webkit-playsinline', '')
+          videoElement.setAttribute('muted', '')
           
           // Försök spela upp videon
-          await videoElement.play()
-          setIsVideoPlaying(true)
-          console.log('Video started playing successfully')
-        } catch (error) {
-          console.error('Autoplay failed:', error)
+          const playPromise = videoElement.play()
           
-          // Om autoplay misslyckas, försök igen vid användarinteraktion
-          const playOnInteraction = () => {
-            videoElement.play()
+          if (playPromise !== undefined) {
+            playPromise
               .then(() => {
                 setIsVideoPlaying(true)
-                console.log('Video started playing after user interaction')
-                
-                // Ta bort event listeners efter lyckad uppspelning
-                document.removeEventListener('touchstart', playOnInteraction)
-                document.removeEventListener('click', playOnInteraction)
+                console.log('Video started playing successfully')
               })
-              .catch(err => console.error('Play after interaction failed:', err))
+              .catch(error => {
+                console.error('Autoplay failed:', error)
+                
+                // Om autoplay misslyckas, försök igen vid användarinteraktion
+                const playOnInteraction = () => {
+                  videoElement.play()
+                    .then(() => {
+                      setIsVideoPlaying(true)
+                      console.log('Video started playing after user interaction')
+                      
+                      // Ta bort event listeners efter lyckad uppspelning
+                      document.removeEventListener('touchstart', playOnInteraction)
+                      document.removeEventListener('click', playOnInteraction)
+                      document.removeEventListener('scroll', playOnInteraction)
+                    })
+                    .catch(err => console.error('Play after interaction failed:', err))
+                }
+                
+                document.addEventListener('touchstart', playOnInteraction, { once: true })
+                document.addEventListener('click', playOnInteraction, { once: true })
+                document.addEventListener('scroll', playOnInteraction, { once: true })
+              })
           }
-          
-          document.addEventListener('touchstart', playOnInteraction, { once: true })
-          document.addEventListener('click', playOnInteraction, { once: true })
+        } catch (error) {
+          console.error('Video setup failed:', error)
         }
       }
     }
     
     // Starta uppspelningen när komponenten har monterats
     if (mounted) {
-      handleVideoPlay()
+      // Kort timeout för att säkerställa att DOM är helt redo
+      setTimeout(handleVideoPlay, 100)
     }
     
     // Lägg till event listener för när videon slutar
@@ -73,6 +89,9 @@ export function Hero() {
     return () => {
       if (videoElement) {
         videoElement.removeEventListener('ended', () => {})
+        document.removeEventListener('touchstart', () => {})
+        document.removeEventListener('click', () => {})
+        document.removeEventListener('scroll', () => {})
       }
     }
   }, [mounted])
@@ -98,6 +117,13 @@ export function Hero() {
               videoRef.current.play()
                 .then(() => setIsVideoPlaying(true))
                 .catch(err => console.error('onCanPlay autoplay failed:', err))
+            }
+          }}
+          onTouchStart={() => {
+            if (videoRef.current && !isVideoPlaying) {
+              videoRef.current.play()
+                .then(() => setIsVideoPlaying(true))
+                .catch(err => console.error('Touch autoplay failed:', err))
             }
           }}
         >
