@@ -13,6 +13,9 @@ export interface ProjectItem {
   featured?: boolean
   client?: string
   year?: string
+  status?: string
+  secondaryCategory?: string
+  progress?: number
 }
 
 interface ProjectContextType {

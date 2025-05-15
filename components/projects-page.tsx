@@ -20,70 +20,35 @@ const allProjects: ProjectItem[] = [
     featured: true,
     client: "Barberhaus Stockholm",
     year: "2025",
+    status: "Färdig"
   },
   {
-    title: "TechFlow",
-    description: "Modern e-handelsplattform för teknikprodukter med sömlös betalningsintegration och lagerhantering.",
-    category: "E-handel",
-    image: "/placeholder.jpg",
-    technologies: ["React", "Next.js", "Supabase", "Stripe"],
-    link: "#",
+    title: "MaxCor",
+    description: "Modern webbplats för byggföretaget MaxCor AB med elegant design och användarvänligt gränssnitt. Presenterar företagets totalentreprenadtjänster inom renovering, nybyggnation och projektledning. Implementerad med Next.js och TypeScript för optimal prestanda och SEO. Använder Tailwind CSS för responsiv design som anpassar sig perfekt till alla enheter. Sidan innehåller omfattande information om företagets tjänster, process, referenser och kontaktformulär med modern UI/UX och subtila animationer.",
+    category: "Webbutveckling",
+    image: "placeholders/placeholder-maxcor.png",
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Shadcn/UI", "Framer Motion", "Vercel"],
+    link: "https://max-cor.vercel.app/",
     featured: true,
-    client: "TechFlow AB",
-    year: "2024",
+    client: "MaxCor AB",
+    year: "2025",
+    status: "Pågående",
+    secondaryCategory: "Pågående projekt",
+    progress: 75
   },
   {
-    title: "Hälsa App",
-    description: "Mobilapp för träning och kostregistrering med personliga rekommendationer driven av AI.",
+    title: "Moi Sushi & Pokébowl",
+    description: "Moi Sushi & Pokébowl är en mobilapplikation utvecklad för restaurangen Moi i Trelleborg, med målet att digitalisera och förbättra kundupplevelsen. Appen erbjuder en interaktiv meny där användare kan bläddra bland rätter, filtrera efter allergener och se detaljerad näringsinformation. Byggd med React Native och Expo för en sömlös upplevelse på både iOS och Android. Supabase används som backend för datalagring, autentisering och framtida beställningsfunktioner. Designen är fokuserad på enkelhet och tydlighet, med återanvändbara komponenter för effektiv utveckling. Planerade funktioner inkluderar sökfunktion, favoriter, varukorg och användarprofiler.",
     category: "Apputveckling",
-    image: "/placeholder.jpg",
-    technologies: ["React Native", "Firebase", "TensorFlow"],
-    link: "#",
+    image: "/placeholders/placeholder-moi.png",
+    technologies: ["React Native", "Expo", "TypeScript", "Supabase", "Tailwind CSS", "Shadcn/ui"],
+    link: "https://github.com/Benim22/Moi-app",
     featured: true,
-    client: "Hälsoperspektiv Sverige",
-    year: "2023",
-  },
-  {
-    title: "FinTech Dashboard",
-    description: "Avancerad finansiell plattform med realtidsdata och visualiseringar för investeringsbeslut.",
-    category: "AI-lösningar",
-    image: "/placeholder.jpg",
-    technologies: ["React", "Node.js", "D3.js", "OpenAI API"],
-    link: "#",
-    featured: true,
-    client: "Finans Direkt",
-    year: "2024",
-  },
-  {
-    title: "GreenGrow",
-    description: "Varumärkesidentitet och webbdesign för ett innovativt miljövänligt jordbruksföretag.",
-    category: "Grafisk design",
-    image: "/placeholder.jpg",
-    technologies: ["Figma", "Adobe Illustrator", "Adobe Photoshop"],
-    link: "#",
-    featured: true,
-    client: "GreenGrow",
-    year: "2023",
-  },
-  {
-    title: "SocialBoost",
-    description: "Kampanjverktyg för sociala medier med automatiserade flöden och dataanalys.",
-    category: "Digital Marknadsföring",
-    image: "/placeholder.jpg",
-    technologies: ["React", "Node.js", "Meta API", "Google Analytics"],
-    link: "#",
-    client: "MediaForce",
-    year: "2024",
-  },
-  {
-    title: "FashionStore",
-    description: "E-handelslösning för modebranschen med virtuella provrum och personaliserad shopping.",
-    category: "E-handel",
-    image: "/placeholder.jpg",
-    technologies: ["React", "Shopify", "Three.js", "Tailwind CSS"],
-    link: "#",
-    client: "StyleMode",
-    year: "2023",
+    client: "Moi Sushi & Pokébowl",
+    year: "2025",
+    status: "Pågående",
+    secondaryCategory: "Pågående projekt",
+    progress: 75
   },
 ]
 
@@ -91,6 +56,8 @@ const categories = [
   "Alla",
   "Webbutveckling",
   "Apputveckling",
+  "Renoverade hemsidor",
+  "Pågående projekt",
   "AI-lösningar",
   "Grafisk design",
   "Digital Marknadsföring",
@@ -113,7 +80,9 @@ export function ProjectsPage() {
   
   const filteredProjects = allProjects.filter(project => {
     // Filter by category
-    return activeCategory === "Alla" || project.category === activeCategory
+    return activeCategory === "Alla" || 
+           project.category === activeCategory || 
+           project.secondaryCategory === activeCategory
   })
 
   const containerVariants = {
@@ -184,15 +153,18 @@ export function ProjectsPage() {
           </div>
           
           {filteredProjects.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-lg text-foreground/70">Inga projekt hittades i denna kategori.</p>
-              <Button 
-                variant="link" 
-                className="text-[#00ADB5] mt-2"
-                onClick={() => setActiveCategory("Alla")}
-              >
-                Visa alla projekt
-              </Button>
+            <div className="text-center py-12">
+              <div className="bg-[#16213E]/50 rounded-lg p-8 max-w-xl mx-auto border border-[#0F3460]/30">
+                <p className="text-lg text-foreground/70 mb-3">Vi har för tillfället inga projekt i denna kategori.</p>
+                <p className="text-sm text-foreground/60 mb-5">Besök oss gärna igen inom kort då vi kontinuerligt uppdaterar vår portfolio med nya spännande projekt.</p>
+                <Button 
+                  variant="default" 
+                  className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white"
+                  onClick={() => setActiveCategory("Alla")}
+                >
+                  Visa alla projekt
+                </Button>
+              </div>
             </div>
           ) : (
             <motion.div
@@ -221,6 +193,26 @@ export function ProjectsPage() {
                         {project.category}
                       </div>
                     </div>
+                    {project.status && (
+                      <div className="absolute top-3 left-3">
+                        <div className={`text-white text-xs py-1 px-2 rounded-full flex items-center gap-1 ${
+                          project.status === "Pågående" ? "bg-amber-500" : "bg-emerald-500"
+                        }`}>
+                          <span className={`w-2 h-2 rounded-full ${
+                            project.status === "Pågående" ? "bg-amber-300 animate-pulse" : "bg-emerald-300"
+                          }`}></span>
+                          {project.status}
+                        </div>
+                      </div>
+                    )}
+                    {project.status === "Pågående" && project.progress !== undefined && (
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/30">
+                        <div 
+                          className="h-full bg-amber-500" 
+                          style={{ width: `${project.progress}%` }}
+                        ></div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="p-5">
@@ -293,7 +285,10 @@ export function ProjectsPage() {
       
       {/* Project Modal */}
       {selectedProject && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div 
+          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          onClick={closeModal}
+        >
           <div 
             className="bg-[#16213E] rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
@@ -317,6 +312,28 @@ export function ProjectsPage() {
                   {selectedProject.category}
                 </div>
               </div>
+              {selectedProject.status && (
+                <div className="absolute top-12 left-3">
+                  <div className={`text-white text-xs py-1 px-2 rounded-full flex items-center gap-1 ${
+                    selectedProject.status === "Pågående" ? "bg-amber-500" : "bg-emerald-500"
+                  }`}>
+                    <span className={`w-2 h-2 rounded-full ${
+                      selectedProject.status === "Pågående" ? "bg-amber-300 animate-pulse" : "bg-emerald-300"
+                    }`}></span>
+                    {selectedProject.status}
+                  </div>
+                </div>
+              )}
+              {selectedProject.status === "Pågående" && selectedProject.progress !== undefined && (
+                <div className="absolute bottom-0 left-0 right-0 h-2 bg-black/30">
+                  <div 
+                    className="h-full bg-amber-500" 
+                    style={{ width: `${selectedProject.progress}%` }}
+                  >
+                    <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-white font-bold">{selectedProject.progress}%</span>
+                  </div>
+                </div>
+              )}
             </div>
             
             <div className="p-6">

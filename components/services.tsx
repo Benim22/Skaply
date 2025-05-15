@@ -4,7 +4,7 @@ import { useInView } from "react-intersection-observer"
 import { Globe, Smartphone, Brain, Palette, Target, ShoppingCart, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { motion } from "framer-motion"
 
@@ -14,36 +14,42 @@ const services = [
     description: "Moderna, snabba och responsiva webbplatser med React, Next.js och Supabase.",
     icon: Globe,
     color: "from-[#00ADB5] to-[#0F3460]",
+    href: "/tjanster#web"
   },
   {
     title: "Apputveckling",
     description: "Skräddarsydda mobilappar och spel med React Native för iOS och Android.",
     icon: Smartphone,
     color: "from-[#0F3460] to-[#00ADB5]",
+    href: "/tjanster#app"
   },
   {
     title: "AI-lösningar",
     description: "Smarta chatbottar, automationer och AI-integrationer för ditt företag.",
     icon: Brain,
     color: "from-[#E94560] to-[#0F3460]",
+    href: "/tjanster#ai"
   },
   {
     title: "Grafisk design",
     description: "Logotyper, visuell identitet och UI/UX-design som sticker ut.",
     icon: Palette,
     color: "from-[#0F3460] to-[#E94560]",
+    href: "/tjanster#design"
   },
   {
     title: "Digital Marknadsföring",
     description: "Strategier för att nå din målgrupp online och öka din digitala närvaro.",
     icon: Target,
     color: "from-[#00ADB5] to-[#E94560]",
+    href: "/tjanster#digital-marketing"
   },
   {
     title: "E-handel",
     description: "Kompletta lösningar för online-försäljning med fokus på användarvänlighet och konvertering.",
     icon: ShoppingCart,
     color: "from-[#E94560] to-[#00ADB5]",
+    href: "/tjanster#ecommerce"
   },
 ]
 
@@ -87,6 +93,18 @@ export function Services() {
                 <CardContent>
                   <CardDescription className="text-foreground/70 mb-4">{service.description}</CardDescription>
                 </CardContent>
+                <CardFooter>
+                  <Button 
+                    asChild 
+                    variant="outline" 
+                    className="w-full mt-2 border-[#0F3460]/30 hover:bg-[#00ADB5]/10 hover:text-[#00ADB5] hover:border-[#00ADB5]/50"
+                  >
+                    <Link href={service.href}>
+                      <span>Läs mer</span>
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Link>
+                  </Button>
+                </CardFooter>
               </Card>
             </ScrollReveal>
           ))}
