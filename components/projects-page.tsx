@@ -26,7 +26,7 @@ const allProjects: ProjectItem[] = [
     title: "MaxCor",
     description: "Modern webbplats för byggföretaget MaxCor AB med elegant design och användarvänligt gränssnitt. Presenterar företagets totalentreprenadtjänster inom renovering, nybyggnation och projektledning. Implementerad med Next.js och TypeScript för optimal prestanda och SEO. Använder Tailwind CSS för responsiv design som anpassar sig perfekt till alla enheter. Sidan innehåller omfattande information om företagets tjänster, process, referenser och kontaktformulär med modern UI/UX och subtila animationer.",
     category: "Webbutveckling",
-    image: "placeholders/placeholder-maxcor.png",
+    image: "/placeholders/placeholder-maxcor.png",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Shadcn/UI", "Framer Motion", "Vercel"],
     link: "https://max-cor.vercel.app/",
     featured: true,
