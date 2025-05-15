@@ -6,8 +6,31 @@ import { ServiceDetail } from "@/components/service-detail"
 import { SeoSchema } from "@/components/seo-schema"
 import { useEffect } from "react"
 import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 
 export default function ServicesPage() {
+  return (
+    <div className="min-h-screen bg-background">
+      <SeoSchema 
+        type="Service"
+        name="Digitala Tjänster & Lösningar | Webbutveckling, Appar & AI"
+        description="Skräddarsydda digitala tjänster för moderna företag - webbutveckling, apputveckling, AI-lösningar, design & digital marknadsföring."
+        url="https://www.skaply.se/tjanster"
+        image="https://www.skaply.se/images/tjanster-og.jpg"
+      />
+      <Navbar />
+      <main className="container mx-auto px-4 py-12">
+        <h1 className="text-4xl font-bold mb-8 text-center">Våra Tjänster</h1>
+        <Suspense fallback={<div>Laddar...</div>}>
+          <ServicesContent />
+        </Suspense>
+      </main>
+      <Footer />
+    </div>
+  )
+}
+
+function ServicesContent() {
   const searchParams = useSearchParams()
   
   useEffect(() => {
@@ -27,21 +50,5 @@ export default function ServicesPage() {
     }
   }, [searchParams])
   
-  return (
-    <div className="min-h-screen bg-background">
-      <SeoSchema 
-        type="Service"
-        name="Digitala Tjänster & Lösningar | Webbutveckling, Appar & AI"
-        description="Skräddarsydda digitala tjänster för moderna företag - webbutveckling, apputveckling, AI-lösningar, design & digital marknadsföring."
-        url="https://www.skaply.se/tjanster"
-        image="https://www.skaply.se/images/tjanster-og.jpg"
-      />
-      <Navbar />
-      <main className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-8 text-center">Våra Tjänster</h1>
-        <ServiceDetail />
-      </main>
-      <Footer />
-    </div>
-  )
+  return <ServiceDetail />
 }
