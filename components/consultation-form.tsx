@@ -14,7 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
-import { ArrowRight, ArrowLeft, Check, Send, CalendarDays, Clock, Globe, Smartphone, Brain, Palette, Target, ShoppingCart } from "lucide-react"
+import { ArrowRight, ArrowLeft, Check, Send, CalendarDays, Clock, Globe, Smartphone, Brain, Palette, Target, ShoppingCart, ChevronRight, Info } from "lucide-react"
 
 const serviceIcons = {
   web: Globe,
@@ -285,6 +285,33 @@ export function ConsultationForm() {
     </div>
   )
 
+  const renderStepGuide = () => {
+    const steps = [
+      { title: "Välj tjänst", description: "Välj den tjänst du är intresserad av" },
+      { title: "Dina uppgifter", description: "Fyll i dina kontaktuppgifter" },
+      { title: "Projektdetaljer", description: "Beskriv ditt projekt" }
+    ]
+    
+    return (
+      <div className="mb-8 bg-card/50 backdrop-blur-sm rounded-lg p-4 border border-border/50">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="font-medium text-sm flex items-center">
+            <Info className="h-4 w-4 mr-1 text-[#00ADB5]" />
+            Steg {step} av 3: {steps[step-1].title}
+          </h3>
+          <span className="text-xs text-foreground/60">{step}/3</span>
+        </div>
+        <p className="text-sm text-foreground/70">{steps[step-1].description}</p>
+        <div className="mt-3 h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-[#00ADB5]" 
+            style={{ width: `${(step / 3) * 100}%` }}
+          ></div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -339,7 +366,15 @@ export function ConsultationForm() {
           </motion.div>
         ) : (
           <>
-            {renderStepIndicator()}
+            {/* Visa stegindikator på större skärmar */}
+            <div className="hidden md:block">
+              {renderStepIndicator()}
+            </div>
+            
+            {/* Visa guide på mobila enheter */}
+            <div className="md:hidden">
+              {renderStepGuide()}
+            </div>
 
             <motion.div
               key={`step-${step}`}
@@ -360,6 +395,14 @@ export function ConsultationForm() {
                     Vad kan vi hjälpa dig med?
                   </motion.h2>
 
+                  {/* Mobil instruktion */}
+                  <div className="md:hidden mb-4 bg-[#00ADB5]/10 p-3 rounded-lg text-sm text-center">
+                    <p>Tryck på en tjänst nedan för att välja den</p>
+                    <div className="mt-1 animate-bounce">
+                      <ChevronRight className="h-4 w-4 mx-auto transform rotate-90 text-[#00ADB5]" />
+                    </div>
+                  </div>
+
                   <Form {...form}>
                     <div className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -369,15 +412,29 @@ export function ConsultationForm() {
                             <motion.div
                               key={service.id}
                               whileHover={{ scale: 1.03 }}
+                              whileTap={{ scale: 0.97 }}
                               transition={{ type: "spring", stiffness: 400, damping: 10 }}
                               onClick={() => onServiceSelect(service.id)}
                               className={`relative cursor-pointer rounded-lg border p-4
                                 ${
                                   selectedService === service.id
-                                    ? "border-[#00ADB5] ring-2 ring-[#00ADB5]/30"
+                                    ? "border-[#00ADB5] ring-2 ring-[#00ADB5]/30 bg-[#00ADB5]/5"
                                     : "border-border hover:border-[#00ADB5]/50"
                                 }`}
                             >
+                              {/* Lägg till "Välj" knapp för att göra det tydligare */}
+                              <div className="absolute top-2 right-2">
+                                {selectedService === service.id ? (
+                                  <div className="bg-[#00ADB5] text-white p-1 rounded-full">
+                                    <Check className="h-3 w-3" />
+                                  </div>
+                                ) : (
+                                  <div className="text-xs text-[#00ADB5] font-medium px-2 py-1 bg-[#00ADB5]/10 rounded-full">
+                                    Välj
+                                  </div>
+                                )}
+                              </div>
+                              
                               <div className="flex flex-col items-center text-center">
                                 <div
                                   className={`w-12 h-12 rounded-lg flex items-center justify-center mb-2 
@@ -504,56 +561,111 @@ export function ConsultationForm() {
                                   <div className="mb-4">
                                     <FormLabel>Tilläggstjänster</FormLabel>
                                     <FormDescription>
-                                      Välj de tilläggstjänster du är intresserad av. Vår nya AI-chattbot och andra tjänster kan öka värdet på din digitala närvaro betydligt.
+                                      Välj de tilläggstjänster du är intresserad av.
                                     </FormDescription>
                                   </div>
-                                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                    {additionalServiceOptions.map((option) => (
-                                      <FormField
-                                        key={option.id}
-                                        control={form.control}
-                                        name="additionalServices"
-                                        render={({ field }) => {
-                                          return (
-                                            <FormItem
-                                              key={option.id}
-                                              className="relative flex flex-col p-4 rounded-lg border border-border/50 hover:border-[#00ADB5]/50 transition-all duration-300"
-                                            >
-                                              <div className="flex flex-row items-start space-x-3 space-y-0">
-                                                <FormControl>
-                                                  <Checkbox
-                                                    checked={field.value?.includes(option.id)}
-                                                    onCheckedChange={(checked) => {
-                                                      return checked
-                                                        ? field.onChange([...(field.value || []), option.id])
-                                                        : field.onChange(
-                                                            field.value?.filter((value) => value !== option.id) || []
-                                                          )
-                                                    }}
-                                                    className="mt-1"
-                                                  />
-                                                </FormControl>
-                                                <div className="flex flex-col">
-                                                  <FormLabel className="font-medium cursor-pointer">
-                                                    {option.label}
-                                                  </FormLabel>
-                                                  <p className="text-xs text-foreground/70 mt-1">{option.description}</p>
-                                                </div>
-                                              </div>
-                                              {field.value?.includes(option.id) && (
-                                                <motion.div
-                                                  initial={{ opacity: 0 }}
-                                                  animate={{ opacity: 1 }}
-                                                  className="absolute -top-1 -right-1 bg-[#00ADB5] text-white p-1 rounded-full"
+                                  
+                                  {/* Kategoriserade tilläggstjänster för bättre UX */}
+                                  <div className="space-y-4">
+                                    <div className="bg-card/30 p-4 rounded-lg border border-border/30">
+                                      <h4 className="text-sm font-medium mb-3 text-[#00ADB5]">Populära tillägg</h4>
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        {additionalServiceOptions.slice(0, 6).map((option) => (
+                                          <FormField
+                                            key={option.id}
+                                            control={form.control}
+                                            name="additionalServices"
+                                            render={({ field }) => {
+                                              return (
+                                                <FormItem
+                                                  key={option.id}
+                                                  className="relative flex flex-row items-start space-x-3 space-y-0 p-3 rounded-md bg-background/80 hover:bg-background transition-all duration-200"
                                                 >
-                                                  <Check className="h-3 w-3" />
-                                                </motion.div>
-                                              )}
-                                            </FormItem>
-                                          )
-                                        }}
-                                      />
-                                    ))}
+                                                  <FormControl>
+                                                    <Checkbox
+                                                      checked={field.value?.includes(option.id)}
+                                                      onCheckedChange={(checked) => {
+                                                        return checked
+                                                          ? field.onChange([...(field.value || []), option.id])
+                                                          : field.onChange(
+                                                              field.value?.filter((value) => value !== option.id) || []
+                                                            )
+                                                      }}
+                                                      className="mt-1"
+                                                    />
+                                                  </FormControl>
+                                                  <div className="flex flex-col">
+                                                    <FormLabel className="font-medium cursor-pointer">
+                                                      {option.label}
+                                                    </FormLabel>
+                                                    <p className="text-xs text-foreground/70">{option.description}</p>
+                                                  </div>
+                                                  {field.value?.includes(option.id) && (
+                                                    <motion.div
+                                                      initial={{ opacity: 0 }}
+                                                      animate={{ opacity: 1 }}
+                                                      className="absolute -top-1 -right-1 bg-[#00ADB5] text-white p-1 rounded-full"
+                                                    >
+                                                      <Check className="h-3 w-3" />
+                                                    </motion.div>
+                                                  )}
+                                                </FormItem>
+                                              )
+                                            }}
+                                          />
+                                        ))}
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="bg-card/30 p-4 rounded-lg border border-border/30">
+                                      <h4 className="text-sm font-medium mb-3 text-[#00ADB5]">Fler tilläggstjänster</h4>
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        {additionalServiceOptions.slice(6).map((option) => (
+                                          <FormField
+                                            key={option.id}
+                                            control={form.control}
+                                            name="additionalServices"
+                                            render={({ field }) => {
+                                              return (
+                                                <FormItem
+                                                  key={option.id}
+                                                  className="relative flex flex-row items-start space-x-3 space-y-0 p-3 rounded-md bg-background/80 hover:bg-background transition-all duration-200"
+                                                >
+                                                  <FormControl>
+                                                    <Checkbox
+                                                      checked={field.value?.includes(option.id)}
+                                                      onCheckedChange={(checked) => {
+                                                        return checked
+                                                          ? field.onChange([...(field.value || []), option.id])
+                                                          : field.onChange(
+                                                              field.value?.filter((value) => value !== option.id) || []
+                                                            )
+                                                      }}
+                                                      className="mt-1"
+                                                    />
+                                                  </FormControl>
+                                                  <div className="flex flex-col">
+                                                    <FormLabel className="font-medium cursor-pointer">
+                                                      {option.label}
+                                                    </FormLabel>
+                                                    <p className="text-xs text-foreground/70">{option.description}</p>
+                                                  </div>
+                                                  {field.value?.includes(option.id) && (
+                                                    <motion.div
+                                                      initial={{ opacity: 0 }}
+                                                      animate={{ opacity: 1 }}
+                                                      className="absolute -top-1 -right-1 bg-[#00ADB5] text-white p-1 rounded-full"
+                                                    >
+                                                      <Check className="h-3 w-3" />
+                                                    </motion.div>
+                                                  )}
+                                                </FormItem>
+                                              )
+                                            }}
+                                          />
+                                        ))}
+                                      </div>
+                                    </div>
                                   </div>
                                 </FormItem>
                               )}

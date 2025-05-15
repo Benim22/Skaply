@@ -1,17 +1,16 @@
+"use client"
+
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Shield, Lock, Eye, FileText, Mail, Clock, UserCheck, Settings, HelpCircle, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Integritetspolicy | Skaply",
-  description: "Information om hur Skaply hanterar och skyddar dina personuppgifter.",
-};
+import { useState } from "react";
 
 export default function PrivacyPolicyPage() {
+  const [activeTab, setActiveTab] = useState("vilka-uppgifter");
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -76,14 +75,32 @@ export default function PrivacyPolicyPage() {
             </div>
           </div>
 
-          <Tabs defaultValue="vilka-uppgifter" className="mb-12">
-            <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-8">
-              <TabsTrigger value="vilka-uppgifter">Vilka uppgifter</TabsTrigger>
-              <TabsTrigger value="hur-anvands">Hur de används</TabsTrigger>
-              <TabsTrigger value="delning">Delning</TabsTrigger>
-              <TabsTrigger value="dina-rattigheter">Dina rättigheter</TabsTrigger>
-              <TabsTrigger value="kontakt">Kontakta oss</TabsTrigger>
-            </TabsList>
+          {/* Mobil dropdown för att välja tab */}
+          <div className="md:hidden mb-6">
+            <select 
+              className="w-full p-3 rounded-lg bg-card border border-border/50 text-foreground"
+              value={activeTab}
+              onChange={(e) => setActiveTab(e.target.value)}
+            >
+              <option value="vilka-uppgifter">Vilka uppgifter</option>
+              <option value="hur-anvands">Hur de används</option>
+              <option value="delning">Delning</option>
+              <option value="dina-rattigheter">Dina rättigheter</option>
+              <option value="kontakt">Kontakta oss</option>
+            </select>
+          </div>
+
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-12">
+            {/* Visa TabsList endast på större skärmar */}
+            <div className="hidden md:block">
+              <TabsList className="grid grid-cols-5 mb-8">
+                <TabsTrigger value="vilka-uppgifter">Vilka uppgifter</TabsTrigger>
+                <TabsTrigger value="hur-anvands">Hur de används</TabsTrigger>
+                <TabsTrigger value="delning">Delning</TabsTrigger>
+                <TabsTrigger value="dina-rattigheter">Dina rättigheter</TabsTrigger>
+                <TabsTrigger value="kontakt">Kontakta oss</TabsTrigger>
+              </TabsList>
+            </div>
             
             <TabsContent value="vilka-uppgifter" className="space-y-6">
               <Card className="p-6 bg-card/50 backdrop-blur-sm">

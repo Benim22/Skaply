@@ -199,6 +199,7 @@ export function ServiceDetail() {
             <motion.div
               key={service.id}
               ref={ref}
+              id={service.id}
               variants={itemVariants}
               initial="hidden"
               animate={inView ? "visible" : "hidden"}
