@@ -40,26 +40,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true)
       
+      console.log('Attempting login for:', email)
+      
       // Anropa Supabase-funktionen för att verifiera lösenord
       const { data, error } = await supabase.rpc('verify_admin_password', {
         user_email: email,
         user_password: password
       })
 
+      console.log('Supabase response:', { data, error })
+
       if (error) {
         console.error('Login error:', error)
-        console.error('Error details:', JSON.stringify(error, null, 2))
+        
+        // Specifika felmeddelanden
+        if (error.code === 'PGRST116') {
+          return { success: false, error: 'Admin-funktioner är inte konfigurerade. Kontakta systemadministratör.' }
+        }
+        
         return { success: false, error: `Tekniskt fel: ${error.message || 'Okänt fel'}` }
       }
-
-      console.log('Login response data:', data)
 
       if (!data || data.length === 0) {
         return { success: false, error: 'Felaktig e-post eller lösenord' }
       }
 
       const userData = data[0]
-      console.log('User data:', userData)
+      console.log('User data received:', userData)
       
       const adminUser: AdminUser = {
         id: userData.user_id,
@@ -69,17 +76,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       // Uppdatera last_login
-      const { error: updateError } = await supabase.rpc('update_admin_last_login', {
-        user_id: userData.user_id
-      })
+      try {
+        const { error: updateError } = await supabase.rpc('update_admin_last_login', {
+          user_id: userData.user_id
+        })
 
-      if (updateError) {
-        console.warn('Could not update last_login:', updateError)
+        if (updateError) {
+          console.warn('Could not update last_login:', updateError)
+        }
+      } catch (updateErr) {
+        console.warn('Last login update failed:', updateErr)
       }
 
       setUser(adminUser)
       localStorage.setItem('admin_user', JSON.stringify(adminUser))
       
+      console.log('Login successful, user set:', adminUser)
       return { success: true }
     } catch (error) {
       console.error('Login error:', error)
