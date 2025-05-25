@@ -211,100 +211,100 @@ function ServiceItem({ service, index, onOpenPriceDialog }: { service: any, inde
     },
   }
 
-  return (
-    <motion.div
-      key={service.id}
-      ref={ref}
-      id={service.id}
-      variants={itemVariants}
-      initial="hidden"
-      animate={inView ? "visible" : "hidden"}
-      className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center ${
-        index % 2 === 1 ? "lg:flex-row-reverse" : ""
-      }`}
-    >
-      <div className="relative">
-        <div className={`absolute -inset-4 bg-gradient-to-r ${service.color} rounded-lg blur-lg opacity-20`} />
-        <div className="relative bg-card/50 backdrop-blur-sm rounded-lg p-6 md:p-8 border border-border/50">
-          <div
-            className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 bg-gradient-to-br ${service.color}`}
-          >
-            <service.icon className="h-6 w-6 text-white" />
-          </div>
-          <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
-          <p className="text-foreground/80 mb-6">{service.description}</p>
+          return (
+            <motion.div
+              key={service.id}
+              ref={ref}
+              id={service.id}
+              variants={itemVariants}
+              initial="hidden"
+              animate={inView ? "visible" : "hidden"}
+              className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center ${
+                index % 2 === 1 ? "lg:flex-row-reverse" : ""
+              }`}
+            >
+              <div className="relative">
+                <div className={`absolute -inset-4 bg-gradient-to-r ${service.color} rounded-lg blur-lg opacity-20`} />
+                <div className="relative bg-card/50 backdrop-blur-sm rounded-lg p-6 md:p-8 border border-border/50">
+                  <div
+                    className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 bg-gradient-to-br ${service.color}`}
+                  >
+                    <service.icon className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
+                  <p className="text-foreground/80 mb-6">{service.description}</p>
 
-          <h4 className="font-semibold mb-3">Funktioner:</h4>
-          <ul className="space-y-2 mb-6">
+                  <h4 className="font-semibold mb-3">Funktioner:</h4>
+                  <ul className="space-y-2 mb-6">
             {service.features.map((feature: string, i: number) => (
-              <li key={i} className="flex items-start">
-                <Check className="h-5 w-5 text-[#00ADB5] mr-2 shrink-0" />
-                <span className="text-foreground/70">{feature}</span>
-              </li>
-            ))}
-          </ul>
+                      <li key={i} className="flex items-start">
+                        <Check className="h-5 w-5 text-[#00ADB5] mr-2 shrink-0" />
+                        <span className="text-foreground/70">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
 
-          <div className="flex flex-col sm:flex-row gap-3 w-full">
-            <motion.div 
-              className="w-full"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            >
-              <Button asChild className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white w-full">
-                <Link href="/kontakt">
-                  Kontakta oss
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </motion.div>
+                  <div className="flex flex-col sm:flex-row gap-3 w-full">
+                    <motion.div 
+                      className="w-full"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    >
+                      <Button asChild className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white w-full">
+                        <Link href="/kontakt">
+                          Kontakta oss
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </motion.div>
 
-            <motion.div 
-              className="w-full"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            >
-              <Button
-                variant="outline"
-                className="border-[#00ADB5] text-[#00ADB5] hover:bg-[#00ADB5]/10 w-full"
+                    <motion.div 
+                      className="w-full"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    >
+                      <Button
+                        variant="outline"
+                        className="border-[#00ADB5] text-[#00ADB5] hover:bg-[#00ADB5]/10 w-full"
                 onClick={() => onOpenPriceDialog(service)}
-              >
-                <PiggyBank className="mr-2 h-4 w-4" />
-                Se riktpriser
-              </Button>
-            </motion.div>
-          </div>
-        </div>
-      </div>
+                      >
+                        <PiggyBank className="mr-2 h-4 w-4" />
+                        Se riktpriser
+                      </Button>
+                    </motion.div>
+                  </div>
+                </div>
+              </div>
 
-      <div className="space-y-6">
-        <h4 className="text-xl font-semibold">Teknologier vi använder</h4>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="space-y-6">
+                <h4 className="text-xl font-semibold">Teknologier vi använder</h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {service.technologies.map((tech: string, i: number) => (
-            <Card key={i} className="border border-border/50 bg-card/30 backdrop-blur-sm">
-              <CardContent className="p-4 text-center">
-                <p className="font-medium">{tech}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                    <Card key={i} className="border border-border/50 bg-card/30 backdrop-blur-sm">
+                      <CardContent className="p-4 text-center">
+                        <p className="font-medium">{tech}</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
 
-        <div className="bg-[#16213E]/50 rounded-lg p-6 border border-[#0F3460]/30">
-          <h4 className="text-xl font-semibold mb-3">Varför välja oss för {service.title.toLowerCase()}?</h4>
-          <p className="text-foreground/80 mb-4">
-            Vi kombinerar teknisk expertis med kreativitet för att leverera lösningar som inte bara ser bra ut,
-            utan också presterar exceptionellt. Vårt fokus ligger på kvalitet, användarvänlighet och långsiktiga
-            resultat.
-          </p>
-          <p className="text-foreground/80">
-            Med vår erfarenhet inom {service.title.toLowerCase()} kan vi hjälpa dig att ta ditt projekt från idé
-            till verklighet, oavsett storlek eller komplexitet.
-          </p>
-        </div>
-      </div>
-    </motion.div>
-  )
+                <div className="bg-[#16213E]/50 rounded-lg p-6 border border-[#0F3460]/30">
+                  <h4 className="text-xl font-semibold mb-3">Varför välja oss för {service.title.toLowerCase()}?</h4>
+                  <p className="text-foreground/80 mb-4">
+                    Vi kombinerar teknisk expertis med kreativitet för att leverera lösningar som inte bara ser bra ut,
+                    utan också presterar exceptionellt. Vårt fokus ligger på kvalitet, användarvänlighet och långsiktiga
+                    resultat.
+                  </p>
+                  <p className="text-foreground/80">
+                    Med vår erfarenhet inom {service.title.toLowerCase()} kan vi hjälpa dig att ta ditt projekt från idé
+                    till verklighet, oavsett storlek eller komplexitet.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          )
 }
 
 export function ServiceDetail() {

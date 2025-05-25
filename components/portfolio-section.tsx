@@ -107,14 +107,14 @@ export function PortfolioSection() {
             <p className="text-foreground/70">Laddar projekt...</p>
           </div>
         ) : (
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-          >
-            {portfolioItems.map((item, index) => (
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          {portfolioItems.map((item, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
@@ -210,8 +210,8 @@ export function PortfolioSection() {
                 </div>
               </div>
             </motion.div>
-                      ))}
-          </motion.div>
+          ))}
+        </motion.div>
         )}
 
         <div className="mt-12 text-center">

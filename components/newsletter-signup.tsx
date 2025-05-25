@@ -83,20 +83,20 @@ export function NewsletterSignup() {
           throw error
         }
       } else {
-        setSuccess(true)
+    setSuccess(true)
         
         // Trigga konfetti-effekt
         triggerConfetti()
-        
-        toast({
+    
+    toast({
           title: "🎉 Tack för din anmälan!",
           description: "Du är nu prenumerant på vårt nyhetsbrev. Välkommen till familjen!",
-        })
-        
-        // Återställ formuläret efter några sekunder
-        setTimeout(() => {
-          setEmail("")
-          setSuccess(false)
+    })
+    
+    // Återställ formuläret efter några sekunder
+    setTimeout(() => {
+      setEmail("")
+      setSuccess(false)
         }, 5000)
       }
     } catch (error) {
@@ -184,7 +184,7 @@ export function NewsletterSignup() {
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div className="flex gap-2">
+                <div className="flex gap-2">
                   <Input
                     type="email"
                     placeholder="Din e-postadress"
@@ -218,9 +218,9 @@ export function NewsletterSignup() {
                     )}
                   </Button>
                 </div>
-                    <p className="text-xs text-foreground/50 mt-2 text-left">
-                      Vi respekterar din integritet och delar aldrig dina uppgifter med tredje part.
-                    </p>
+                <p className="text-xs text-foreground/50 mt-2 text-left">
+                  Vi respekterar din integritet och delar aldrig dina uppgifter med tredje part.
+                </p>
                   </motion.form>
                 )}
               </AnimatePresence>

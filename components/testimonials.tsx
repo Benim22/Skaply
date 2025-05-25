@@ -113,8 +113,8 @@ export function Testimonials() {
             <p className="text-foreground/70">Laddar omdömen...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {testimonials.map((testimonial, index) => (
             <ScrollReveal key={index} delay={index * 0.1} direction="up">
               <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
                 <Card className="h-full border border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:border-[#E94560]/30">
@@ -151,8 +151,8 @@ export function Testimonials() {
                 </Card>
               </motion.div>
             </ScrollReveal>
-            ))}
-          </div>
+          ))}
+        </div>
         )}
       </div>
     </section>

@@ -57,7 +57,7 @@ export function ProjectsPage() {
       document.body.style.overflow = 'hidden'
     }
   }, [contextProject, shouldOpenModal, setShouldOpenModal])
-
+  
   const fetchProjects = async () => {
     try {
       const { data, error } = await supabase
