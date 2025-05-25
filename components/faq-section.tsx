@@ -1,16 +1,24 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
+import { supabase, FAQItem as SupabaseFAQItem } from "@/lib/supabase"
 
 interface FAQItem {
   question: string
   answer: string
 }
 
-const faqItems: FAQItem[] = [
+// Konvertera Supabase FAQ till lokal FAQ-typ
+const convertToFAQItem = (faq: SupabaseFAQItem): FAQItem => ({
+  question: faq.question,
+  answer: faq.answer
+})
+
+// Fallback data om inga FAQ finns i databasen
+const fallbackFAQItems: FAQItem[] = [
   {
     question: "Vilka typer av företag arbetar ni med?",
     answer:
@@ -45,6 +53,40 @@ const faqItems: FAQItem[] = [
 
 export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [faqItems, setFaqItems] = useState<FAQItem[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchFAQItems()
+  }, [])
+
+  const fetchFAQItems = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('faq_items')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+
+      if (error) {
+        console.error('Error fetching FAQ items:', error)
+        setFaqItems(fallbackFAQItems)
+        return
+      }
+
+      if (data && data.length > 0) {
+        const faqItemsConverted = data.map(convertToFAQItem)
+        setFaqItems(faqItemsConverted)
+      } else {
+        setFaqItems(fallbackFAQItems)
+      }
+    } catch (error) {
+      console.error('Error fetching FAQ items:', error)
+      setFaqItems(fallbackFAQItems)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)
@@ -64,7 +106,13 @@ export function FAQSection() {
         </ScrollReveal>
 
         <div className="max-w-3xl mx-auto">
-          {faqItems.map((item, index) => (
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="w-8 h-8 border-2 border-[#00ADB5]/30 border-t-[#00ADB5] rounded-full animate-spin mx-auto mb-4" />
+              <p className="text-foreground/70">Laddar FAQ...</p>
+            </div>
+          ) : (
+            faqItems.map((item, index) => (
             <ScrollReveal key={index} delay={index * 0.05}>
               <div className="mb-4">
                 <button
@@ -91,7 +139,8 @@ export function FAQSection() {
                 </AnimatePresence>
               </div>
             </ScrollReveal>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </section>

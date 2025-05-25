@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useInView } from "react-intersection-observer"
 import { motion } from "framer-motion"
 import { ArrowRight, ExternalLink } from "lucide-react"
@@ -9,54 +10,56 @@ import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useProject, ProjectItem } from "@/contexts/project-context"
+import { supabase, Project } from "@/lib/supabase"
 
-// Använd samma projektdata som på projektsidan
-const portfolioItems: ProjectItem[] = [
-  {
-    title: "Barberhaus",
-    description: "Komplett webbplattform för premium barberupplevelse byggd med Next.js och Tailwind CSS. Implementerade responsiv design, React Context API för flerspråksstöd, avancerat bokningssystem med Supabase-databas och JWT-autentisering. Designen kombinerar modern UI med klassiska barbertraditioner genom skräddarsydda animationer och optimerad användarupplevelse.",
-    category: "Webbutveckling",
-    image: "/barberhaus.png",
-    technologies: ["Next.js", "Tailwind CSS", "React", "Vercel"],
-    link: "https://barberhaus.vercel.app/",
-    featured: true,
-    client: "Barberhaus Stockholm",
-    year: "2025",
-    status: "Färdig"
-  },
-  {
-    title: "MaxCor",
-    description: "Modern webbplats för byggföretaget MaxCor AB med elegant design och användarvänligt gränssnitt. Presenterar företagets totalentreprenadtjänster inom renovering, nybyggnation och projektledning. Implementerad med Next.js och TypeScript för optimal prestanda och SEO.",
-    category: "Webbutveckling",
-    image: "/placeholders/placeholder-maxcor.png",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Shadcn/UI", "Framer Motion", "Vercel"],
-    link: "https://max-cor.vercel.app/",
-    featured: true,
-    client: "MaxCor AB",
-    year: "2025",
-    status: "Pågående",
-    secondaryCategory: "Pågående projekt",
-    progress: 75
-  },
-  {
-    title: "Moi Sushi & Pokébowl",
-    description: "Moi Sushi & Pokébowl är en mobilapplikation utvecklad för restaurangen Moi i Trelleborg, med målet att digitalisera och förbättra kundupplevelsen. Appen erbjuder en interaktiv meny där användare kan bläddra bland rätter, filtrera efter allergener och se detaljerad näringsinformation.",
-    category: "Apputveckling",
-    image: "/placeholders/placeholder-moi.png",
-    technologies: ["React Native", "Expo", "TypeScript", "Supabase", "Tailwind CSS", "Shadcn/ui"],
-    link: "https://github.com/Benim22/Moi-app",
-    featured: true,
-    client: "Moi Sushi & Pokébowl",
-    year: "2025",
-    status: "Pågående",
-    secondaryCategory: "Pågående projekt",
-    progress: 75
-  },
-]
+// Konvertera Supabase Project till ProjectItem
+const convertToProjectItem = (project: Project): ProjectItem => ({
+  title: project.title,
+  description: project.description,
+  category: project.category,
+  image: project.image_url,
+  technologies: project.technologies,
+  link: project.project_link || "#",
+  featured: project.featured,
+  client: project.client,
+  year: project.year,
+  status: project.status,
+  secondaryCategory: project.secondary_category,
+  progress: project.progress
+})
 
 export function PortfolioSection() {
   const router = useRouter()
   const { setSelectedProject, setShouldOpenModal } = useProject()
+  const [portfolioItems, setPortfolioItems] = useState<ProjectItem[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchFeaturedProjects()
+  }, [])
+
+  const fetchFeaturedProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('featured', true)
+        .order('sort_order', { ascending: true })
+        .limit(3)
+
+      if (error) {
+        console.error('Error fetching featured projects:', error)
+        return
+      }
+
+      const projectItems = data.map(convertToProjectItem)
+      setPortfolioItems(projectItems)
+    } catch (error) {
+      console.error('Error fetching featured projects:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
   
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -98,14 +101,20 @@ export function PortfolioSection() {
           </div>
         </ScrollReveal>
 
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-        >
-          {portfolioItems.map((item, index) => (
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="w-8 h-8 border-2 border-[#00ADB5]/30 border-t-[#00ADB5] rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-foreground/70">Laddar projekt...</p>
+          </div>
+        ) : (
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+          >
+            {portfolioItems.map((item, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
@@ -201,8 +210,9 @@ export function PortfolioSection() {
                 </div>
               </div>
             </motion.div>
-          ))}
-        </motion.div>
+                      ))}
+          </motion.div>
+        )}
 
         <div className="mt-12 text-center">
           <Button asChild className="bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white">

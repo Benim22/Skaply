@@ -8,49 +8,23 @@ import { ExternalLink, Filter, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { useProject, ProjectItem } from "@/contexts/project-context"
+import { supabase, Project } from "@/lib/supabase"
 
-const allProjects: ProjectItem[] = [
-  {
-    title: "Barberhaus",
-    description: "Komplett webbplattform för premium barberupplevelse byggd med Next.js och Tailwind CSS. Implementerade responsiv design, React Context API för flerspråksstöd, avancerat bokningssystem med Supabase-databas och JWT-autentisering. Designen kombinerar modern UI med klassiska barbertraditioner genom skräddarsydda animationer och optimerad användarupplevelse.",
-    category: "Webbutveckling",
-    image: "/barberhaus.png",
-    technologies: ["Next.js", "Tailwind CSS", "React", "Vercel"],
-    link: "https://barberhaus.vercel.app/",
-    featured: true,
-    client: "Barberhaus Stockholm",
-    year: "2025",
-    status: "Färdig"
-  },
-  {
-    title: "MaxCor",
-    description: "Modern webbplats för byggföretaget MaxCor AB med elegant design och användarvänligt gränssnitt. Presenterar företagets totalentreprenadtjänster inom renovering, nybyggnation och projektledning. Implementerad med Next.js och TypeScript för optimal prestanda och SEO. Använder Tailwind CSS för responsiv design som anpassar sig perfekt till alla enheter. Sidan innehåller omfattande information om företagets tjänster, process, referenser och kontaktformulär med modern UI/UX och subtila animationer.",
-    category: "Webbutveckling",
-    image: "/placeholders/placeholder-maxcor.png",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Shadcn/UI", "Framer Motion", "Vercel"],
-    link: "https://max-cor.vercel.app/",
-    featured: true,
-    client: "MaxCor AB",
-    year: "2025",
-    status: "Pågående",
-    secondaryCategory: "Pågående projekt",
-    progress: 75
-  },
-  {
-    title: "Moi Sushi & Pokébowl",
-    description: "Moi Sushi & Pokébowl är en mobilapplikation utvecklad för restaurangen Moi i Trelleborg, med målet att digitalisera och förbättra kundupplevelsen. Appen erbjuder en interaktiv meny där användare kan bläddra bland rätter, filtrera efter allergener och se detaljerad näringsinformation. Byggd med React Native och Expo för en sömlös upplevelse på både iOS och Android. Supabase används som backend för datalagring, autentisering och framtida beställningsfunktioner. Designen är fokuserad på enkelhet och tydlighet, med återanvändbara komponenter för effektiv utveckling. Planerade funktioner inkluderar sökfunktion, favoriter, varukorg och användarprofiler.",
-    category: "Apputveckling",
-    image: "/placeholders/placeholder-moi.png",
-    technologies: ["React Native", "Expo", "TypeScript", "Supabase", "Tailwind CSS", "Shadcn/ui"],
-    link: "https://github.com/Benim22/Moi-app",
-    featured: true,
-    client: "Moi Sushi & Pokébowl",
-    year: "2025",
-    status: "Pågående",
-    secondaryCategory: "Pågående projekt",
-    progress: 75
-  },
-]
+// Konvertera Supabase Project till ProjectItem
+const convertToProjectItem = (project: Project): ProjectItem => ({
+  title: project.title,
+  description: project.description,
+  category: project.category,
+  image: project.image_url,
+  technologies: project.technologies,
+  link: project.project_link || "#",
+  featured: project.featured,
+  client: project.client,
+  year: project.year,
+  status: project.status,
+  secondaryCategory: project.secondary_category,
+  progress: project.progress
+})
 
 const categories = [
   "Alla",
@@ -67,7 +41,13 @@ const categories = [
 export function ProjectsPage() {
   const [activeCategory, setActiveCategory] = useState("Alla")
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null)
+  const [projects, setProjects] = useState<ProjectItem[]>([])
+  const [loading, setLoading] = useState(true)
   const { selectedProject: contextProject, shouldOpenModal, setShouldOpenModal } = useProject()
+  
+  useEffect(() => {
+    fetchProjects()
+  }, [])
   
   useEffect(() => {
     // Om ett projekt är valt via kontexten, öppna modalen för det projektet
@@ -77,8 +57,29 @@ export function ProjectsPage() {
       document.body.style.overflow = 'hidden'
     }
   }, [contextProject, shouldOpenModal, setShouldOpenModal])
+
+  const fetchProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('sort_order', { ascending: true })
+
+      if (error) {
+        console.error('Error fetching projects:', error)
+        return
+      }
+
+      const projectItems = data.map(convertToProjectItem)
+      setProjects(projectItems)
+    } catch (error) {
+      console.error('Error fetching projects:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
   
-  const filteredProjects = allProjects.filter(project => {
+  const filteredProjects = projects.filter((project: ProjectItem) => {
     // Filter by category
     return activeCategory === "Alla" || 
            project.category === activeCategory || 
@@ -152,7 +153,14 @@ export function ProjectsPage() {
             </div>
           </div>
           
-          {filteredProjects.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="bg-[#16213E]/50 rounded-lg p-8 max-w-xl mx-auto border border-[#0F3460]/30">
+                <div className="w-8 h-8 border-2 border-[#00ADB5]/30 border-t-[#00ADB5] rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-lg text-foreground/70">Laddar projekt...</p>
+              </div>
+            </div>
+          ) : filteredProjects.length === 0 ? (
             <div className="text-center py-12">
               <div className="bg-[#16213E]/50 rounded-lg p-8 max-w-xl mx-auto border border-[#0F3460]/30">
                 <p className="text-lg text-foreground/70 mb-3">Vi har för tillfället inga projekt i denna kategori.</p>

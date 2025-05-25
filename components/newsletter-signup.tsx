@@ -1,18 +1,53 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
-import { Send, Check } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Send, Check, Heart, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { useToast } from "@/components/ui/use-toast"
+import { supabase } from "@/lib/supabase"
+import confetti from "canvas-confetti"
 
 export function NewsletterSignup() {
   const [email, setEmail] = useState("")
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const { toast } = useToast()
+
+  // Konfetti-funktion
+  const triggerConfetti = () => {
+    // Första konfetti-explosion
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#00ADB5', '#E94560', '#FFD700', '#FF6B6B', '#4ECDC4']
+    })
+    
+    // Andra konfetti-explosion med fördröjning
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.6 },
+        colors: ['#00ADB5', '#E94560', '#FFD700']
+      })
+    }, 200)
+    
+    // Tredje konfetti-explosion från höger
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.6 },
+        colors: ['#00ADB5', '#E94560', '#FFD700']
+      })
+    }, 400)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,22 +63,52 @@ export function NewsletterSignup() {
     
     setLoading(true)
     
-    // Simulera API-anrop
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    
-    setLoading(false)
-    setSuccess(true)
-    
-    toast({
-      title: "Tack för din anmälan!",
-      description: "Du är nu prenumerant på vårt nyhetsbrev.",
-    })
-    
-    // Återställ formuläret efter några sekunder
-    setTimeout(() => {
-      setEmail("")
-      setSuccess(false)
-    }, 3000)
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscriptions')
+        .insert([{
+          email: email,
+          source: 'homepage',
+          tags: ['general']
+        }])
+
+      if (error) {
+        if (error.code === '23505') { // Unique constraint violation
+          toast({
+            title: "Redan prenumerant",
+            description: "Du är redan prenumerant på vårt nyhetsbrev.",
+            variant: "destructive",
+          })
+        } else {
+          throw error
+        }
+      } else {
+        setSuccess(true)
+        
+        // Trigga konfetti-effekt
+        triggerConfetti()
+        
+        toast({
+          title: "🎉 Tack för din anmälan!",
+          description: "Du är nu prenumerant på vårt nyhetsbrev. Välkommen till familjen!",
+        })
+        
+        // Återställ formuläret efter några sekunder
+        setTimeout(() => {
+          setEmail("")
+          setSuccess(false)
+        }, 5000)
+      }
+    } catch (error) {
+      console.error('Error subscribing to newsletter:', error)
+      toast({
+        title: "Något gick fel",
+        description: "Kunde inte prenumerera på nyhetsbrevet. Försök igen senare.",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -62,8 +127,64 @@ export function NewsletterSignup() {
                 style={{ animationDuration: "10s" }}
               />
               
-              <form onSubmit={handleSubmit} className="relative max-w-md mx-auto">
-                <div className="flex gap-2">
+              {/* Tackmeddelande */}
+              <AnimatePresence>
+                {success && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.8, y: -20 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    className="relative max-w-md mx-auto mb-6 p-6 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-lg backdrop-blur-sm"
+                  >
+                    <div className="text-center">
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.2, type: "spring", stiffness: 400, damping: 10 }}
+                        className="inline-flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full mb-4"
+                      >
+                        <Heart className="w-8 h-8 text-green-400" />
+                      </motion.div>
+                      <motion.h3
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="text-xl font-bold text-green-400 mb-2"
+                      >
+                        Tack så mycket! 🎉
+                      </motion.h3>
+                      <motion.p
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                        className="text-green-300/80"
+                      >
+                        Du är nu prenumerant på vårt nyhetsbrev. Vi ser fram emot att dela spännande nyheter med dig!
+                      </motion.p>
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                        className="flex justify-center mt-3"
+                      >
+                        <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" />
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              
+              <AnimatePresence>
+                {!success && (
+                  <motion.form 
+                    onSubmit={handleSubmit} 
+                    className="relative max-w-md mx-auto"
+                    initial={{ opacity: 1 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="flex gap-2">
                   <Input
                     type="email"
                     placeholder="Din e-postadress"
@@ -97,10 +218,12 @@ export function NewsletterSignup() {
                     )}
                   </Button>
                 </div>
-                <p className="text-xs text-foreground/50 mt-2 text-left">
-                  Vi respekterar din integritet och delar aldrig dina uppgifter med tredje part.
-                </p>
-              </form>
+                    <p className="text-xs text-foreground/50 mt-2 text-left">
+                      Vi respekterar din integritet och delar aldrig dina uppgifter med tredje part.
+                    </p>
+                  </motion.form>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </ScrollReveal>

@@ -1,13 +1,33 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useInView } from "react-intersection-observer"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Star } from "lucide-react"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { motion } from "framer-motion"
+import { supabase, Testimonial as SupabaseTestimonial } from "@/lib/supabase"
 
-const testimonials = [
+interface Testimonial {
+  name: string
+  company: string
+  content: string
+  initials: string
+  rating: number
+}
+
+// Konvertera Supabase Testimonial till lokal testimonial-typ
+const convertToTestimonial = (testimonial: SupabaseTestimonial): Testimonial => ({
+  name: testimonial.name,
+  company: testimonial.company,
+  content: testimonial.content,
+  initials: testimonial.initials,
+  rating: testimonial.rating
+})
+
+// Fallback data om inga testimonials finns i databasen
+const fallbackTestimonials: Testimonial[] = [
   {
     name: "Anna Johansson",
     company: "TechStart AB",
@@ -35,10 +55,44 @@ const testimonials = [
 ]
 
 export function Testimonials() {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
+  const [loading, setLoading] = useState(true)
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   })
+
+  useEffect(() => {
+    fetchTestimonials()
+  }, [])
+
+  const fetchTestimonials = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('testimonials')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+
+      if (error) {
+        console.error('Error fetching testimonials:', error)
+        setTestimonials(fallbackTestimonials)
+        return
+      }
+
+      if (data && data.length > 0) {
+        const testimonialsConverted = data.map(convertToTestimonial)
+        setTestimonials(testimonialsConverted)
+      } else {
+        setTestimonials(fallbackTestimonials)
+      }
+    } catch (error) {
+      console.error('Error fetching testimonials:', error)
+      setTestimonials(fallbackTestimonials)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <section className="py-20 bg-background">
@@ -53,8 +107,14 @@ export function Testimonials() {
           </div>
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="w-8 h-8 border-2 border-[#00ADB5]/30 border-t-[#00ADB5] rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-foreground/70">Laddar omdömen...</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
             <ScrollReveal key={index} delay={index * 0.1} direction="up">
               <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
                 <Card className="h-full border border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300 hover:border-[#E94560]/30">
@@ -91,8 +151,9 @@ export function Testimonials() {
                 </Card>
               </motion.div>
             </ScrollReveal>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )
