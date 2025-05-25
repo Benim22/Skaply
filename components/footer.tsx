@@ -6,6 +6,8 @@ import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Twitter } from "luc
 import { AnimatedLink } from "@/components/ui/animated-link"
 import { AnimatedIcon } from "@/components/ui/animated-icon"
 import { motion } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 export function Footer() {
   const footerVariants = {
@@ -53,22 +55,22 @@ export function Footer() {
             </p>
             <div className="flex space-x-4">
               <AnimatedIcon hoverScale={1.3} hoverRotate={5}>
-                <a href="https://www.facebook.com/profile.php?id=61576780888264" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="Facebook">
+                <a href="https://www.facebook.com/profile.php?id=61576780888264" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
                   <Facebook size={20} />
                 </a>
               </AnimatedIcon>
               <AnimatedIcon hoverScale={1.3} hoverRotate={5}>
-                <a href="https://x.com/Skaplybusiness" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="Twitter">
+                <a href="https://x.com/Skaplybusiness" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="Twitter" target="_blank" rel="noopener noreferrer">
                   <Twitter size={20} />
                 </a>
               </AnimatedIcon>
               <AnimatedIcon hoverScale={1.3} hoverRotate={5}>
-                <a href="https://www.instagram.com/skaply.se/" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="Instagram">
+                <a href="https://www.instagram.com/skaply.se/" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                   <Instagram size={20} />
                 </a>
               </AnimatedIcon>
               <AnimatedIcon hoverScale={1.3} hoverRotate={5}>
-                <a href="#" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="LinkedIn">
+                <a href="#" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
                   <Linkedin size={20} />
                 </a>
               </AnimatedIcon>

@@ -129,7 +129,7 @@ export function TeamSection() {
                     className="text-foreground/60 hover:text-[#00ADB5]"
                     aria-label="LinkedIn"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
                     <Linkedin size={20} />
                   </a>
@@ -138,7 +138,7 @@ export function TeamSection() {
                     className="text-foreground/60 hover:text-[#00ADB5]"
                     aria-label="GitHub"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
                     <FaGithub size={20} />
                   </a>
