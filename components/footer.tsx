@@ -53,12 +53,12 @@ export function Footer() {
             </p>
             <div className="flex space-x-4">
               <AnimatedIcon hoverScale={1.3} hoverRotate={5}>
-                <a href="#" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="Facebook">
+                <a href="https://www.facebook.com/profile.php?id=61576780888264" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="Facebook">
                   <Facebook size={20} />
                 </a>
               </AnimatedIcon>
               <AnimatedIcon hoverScale={1.3} hoverRotate={5}>
-                <a href="#" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="Twitter">
+                <a href="https://x.com/Skaplybusiness" className="text-foreground/60 hover:text-[#00ADB5]" aria-label="Twitter">
                   <Twitter size={20} />
                 </a>
               </AnimatedIcon>
