@@ -31,6 +31,7 @@ export function Navbar() {
   const navLinks = [
     { href: "/", label: "Hem" },
     { href: "/tjanster", label: "Tjänster" },
+    { href: "/tjanster/prenumerationer", label: "Prenumerationer" },
     { href: "/projekt", label: "Projekt" },
     { href: "/om-oss", label: "Om Oss" },
     { href: "/kontakt", label: "Kontakt" },

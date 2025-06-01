@@ -21,6 +21,7 @@ import {
   ExternalLink,
   Target,
   ShoppingCart,
+  CreditCard,
 } from "lucide-react"
 
 interface MobileSidebarProps {
@@ -87,6 +88,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const navLinks = [
     { href: "/", label: "Hem", icon: Home },
     { href: "/tjanster", label: "Tjänster", icon: Layers },
+    { href: "/tjanster/prenumerationer", label: "Prenumerationer", icon: CreditCard },
     { href: "/projekt", label: "Projekt", icon: ExternalLink },
     { href: "/om-oss", label: "Om Oss", icon: Users },
     { href: "/kontakt", label: "Kontakt", icon: Mail },
@@ -116,7 +118,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
           {/* Sidebar */}
           <motion.div
-            className="fixed top-0 left-0 bottom-0 w-[280px] bg-background z-50 shadow-xl border-r border-border/50"
+            className="fixed top-0 left-0 bottom-0 w-[300px] bg-gradient-to-b from-background to-background/95 z-50 shadow-2xl border-r border-border/50 backdrop-blur-xl"
             variants={sidebarVariants}
             initial="hidden"
             animate="visible"
@@ -125,7 +127,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             <div className="flex flex-col h-full">
               {/* Header */}
               <motion.div
-                className="flex items-center justify-between p-4 border-b border-border/50"
+                className="flex items-center justify-between p-6 border-b border-border/50"
                 variants={itemVariants}
               >
                 <Link href="/" className="flex items-center" onClick={onClose}>
@@ -138,36 +140,36 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                     priority
                   />
                 </Link>
-                <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full">
+                <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full hover:bg-[#00ADB5]/10">
                   <X className="h-5 w-5" />
                 </Button>
               </motion.div>
 
               {/* Content */}
-              <div className="flex-1 overflow-y-auto scrollbar-thin py-4">
+              <div className="flex-1 overflow-y-auto scrollbar-thin py-6">
                 {/* Main Navigation */}
-                <div className="px-4 mb-6">
+                <div className="px-6 mb-8">
                   <motion.p
-                    className="text-xs font-semibold text-foreground/60 uppercase tracking-wider mb-2 pl-4"
+                    className="text-xs font-semibold text-foreground/60 uppercase tracking-wider mb-4 pl-4"
                     variants={itemVariants}
                   >
                     Navigation
                   </motion.p>
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     {navLinks.map((link) => (
                       <motion.div key={link.href} variants={itemVariants}>
                         <Link
                           href={link.href}
                           className={cn(
-                            "flex items-center py-2 px-4 rounded-lg transition-colors",
+                            "flex items-center py-3 px-4 rounded-xl transition-all duration-200",
                             pathname === link.href
-                              ? "bg-[#00ADB5]/10 text-[#00ADB5]"
-                              : "hover:bg-muted text-foreground/80 hover:text-foreground",
+                              ? "bg-[#00ADB5]/15 text-[#00ADB5] border border-[#00ADB5]/20"
+                              : "hover:bg-muted/50 text-foreground/80 hover:text-foreground border border-transparent",
                           )}
                           onClick={onClose}
                         >
                           <link.icon className="h-5 w-5 mr-3" />
-                          <span>{link.label}</span>
+                          <span className="font-medium">{link.label}</span>
                           {pathname === link.href && (
                             <motion.div
                               layoutId="activeIndicator"
@@ -184,9 +186,9 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                 </div>
 
                 {/* Services */}
-                <div className="px-4 mb-6">
+                <div className="px-6 mb-8">
                   <motion.p
-                    className="text-xs font-semibold text-foreground/60 uppercase tracking-wider mb-2 pl-4"
+                    className="text-xs font-semibold text-foreground/60 uppercase tracking-wider mb-4 pl-4"
                     variants={itemVariants}
                   >
                     Våra Tjänster
@@ -202,11 +204,11 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                       >
                         <Link
                           href={service.href}
-                          className="flex items-center py-2 px-4 rounded-lg text-foreground/80 hover:text-[#00ADB5] transition-colors"
+                          className="flex items-center py-2.5 px-4 rounded-lg text-foreground/70 hover:text-[#00ADB5] hover:bg-[#00ADB5]/5 transition-all duration-200"
                           onClick={onClose}
                         >
                           <service.icon className="h-4 w-4 mr-3" />
-                          <span>{service.label}</span>
+                          <span className="text-sm">{service.label}</span>
                           <ChevronRight className="ml-auto h-4 w-4 opacity-50" />
                         </Link>
                       </motion.div>
@@ -216,14 +218,15 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
               </div>
 
               {/* Footer */}
-              <motion.div className="p-4 border-t border-border/50" variants={itemVariants}>
+              <motion.div className="p-6 border-t border-border/50" variants={itemVariants}>
                 <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  <Button asChild className="w-full bg-[#00ADB5] hover:bg-[#00ADB5]/80 text-white">
+                  <Button asChild className="w-full bg-gradient-to-r from-[#00ADB5] to-[#00ADB5]/80 hover:from-[#00ADB5]/90 hover:to-[#00ADB5]/70 text-white shadow-lg py-6">
                     <Link href="/kontakt" onClick={onClose}>
+                      <Mail className="mr-2 h-4 w-4" />
                       Boka konsultation
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </Link>
