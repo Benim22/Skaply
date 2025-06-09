@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import { ExternalLink, Filter, X, Sparkles, ArrowRight, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
+import { FormattedText } from "@/components/ui/formatted-text"
 import { useProject, ProjectItem } from "@/contexts/project-context"
 import { supabase, Project } from "@/lib/supabase"
 
@@ -153,23 +154,23 @@ export function ProjectsPage() {
                   <Filter className="h-4 w-4" />
                   <span className="text-sm font-medium hidden sm:block">Filtrera:</span>
                 </div>
-                {categories.map((category) => (
-                  <Button
-                    key={category}
-                    variant={activeCategory === category ? "default" : "outline"}
-                    size="sm"
-                    className={
-                      activeCategory === category
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant={activeCategory === category ? "default" : "outline"}
+                  size="sm"
+                  className={
+                    activeCategory === category
                         ? "bg-gradient-to-r from-[#00ADB5] to-[#00ADB5]/80 hover:from-[#00ADB5]/90 hover:to-[#00ADB5]/70 text-white border-0 shadow-lg shadow-[#00ADB5]/25"
                         : "border-[#0F3460]/50 hover:bg-[#00ADB5]/10 hover:text-[#00ADB5] hover:border-[#00ADB5]/50 backdrop-blur-sm bg-[#16213E]/30 transition-all duration-300"
-                    }
-                    onClick={() => setActiveCategory(category)}
-                  >
-                    {category}
-                  </Button>
-                ))}
-              </div>
+                  }
+                  onClick={() => setActiveCategory(category)}
+                >
+                  {category}
+                </Button>
+              ))}
             </div>
+          </div>
           </ScrollReveal>
           
           {loading ? (
@@ -332,7 +333,7 @@ export function ProjectsPage() {
                   <p className="text-foreground/70 text-sm mb-4">
                     Alla våra priser och paket finns tillgängliga på vår kontaktsida. 
                     Skicka en konsultationsförfrågan så får du detaljerad information om kostnader för ditt specifika projekt.
-                  </p>
+                </p>
                   <Button 
                     asChild 
                     variant="outline" 
@@ -365,7 +366,7 @@ export function ProjectsPage() {
                       Utforska våra tjänster
                       <ArrowRight className="h-4 w-4 ml-2" />
                     </Link>
-                  </Button>
+                </Button>
                 </div>
               </div>
             </ScrollReveal>
@@ -446,7 +447,10 @@ export function ProjectsPage() {
               
               <div className="mb-8">
                 <h3 className="text-sm uppercase text-[#00ADB5] mb-2 font-semibold tracking-wider">Projektbeskrivning</h3>
-                <p className="text-foreground/90 text-lg leading-relaxed">{selectedProject.description}</p>
+                <FormattedText 
+                  content={selectedProject.description} 
+                  className="text-base"
+                />
               </div>
               
               {selectedProject.client && (

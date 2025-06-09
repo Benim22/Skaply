@@ -90,8 +90,8 @@ export default function ServicesPage() {
                 </div>
               </div>
             }>
-              <ServicesContent />
-            </Suspense>
+          <ServicesContent />
+        </Suspense>
           </div>
         </section>
       </main>

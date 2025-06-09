@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/components/ui/use-toast"
+import { FormattedText } from "@/components/ui/formatted-text"
 import { Pencil, Trash2, Plus, X } from "lucide-react"
 import {
   Dialog,
@@ -239,7 +240,10 @@ export function ProjectsAdmin() {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-2">{project.description}</p>
+              <FormattedText 
+                content={project.description} 
+                className="mb-4"
+              />
               <div className="flex flex-wrap gap-1">
                 {project.technologies.map((tech, i) => (
                   <span key={i} className="text-xs bg-secondary px-2 py-1 rounded">

@@ -117,9 +117,9 @@ export default function AboutPage() {
         {/* Content Sections */}
         <section className="pb-16 md:pb-24">
           <div className="container mx-auto px-4 space-y-24">
-            <TeamSection />
-            <ProcessSection />
-            <VisionSection />
+        <TeamSection />
+        <ProcessSection />
+        <VisionSection />
           </div>
         </section>
       </main>

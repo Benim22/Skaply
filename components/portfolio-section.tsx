@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import { ArrowRight, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
+import { FormattedText } from "@/components/ui/formatted-text"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -166,7 +167,16 @@ export function PortfolioSection() {
                   )}
                 </div>
                 
-                <p className="text-foreground/70 mb-4 line-clamp-2">{item.description}</p>
+                <div className="mb-4">
+                  <p className="text-foreground/70 text-sm line-clamp-2 leading-relaxed">
+                    {item.description.split('\n').find(line => 
+                      line.trim() && 
+                      !line.match(/^[🍣📱⚙️🛠️🎨📊🚀]/) && 
+                      !line.includes(':') &&
+                      line.length > 20
+                    ) || item.description.split('\n')[0]}
+                  </p>
+                </div>
                 
                 <div className="flex flex-wrap gap-1 mb-4">
                   {item.technologies.slice(0, 3).map((tech, i) => (

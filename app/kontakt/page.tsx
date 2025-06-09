@@ -91,24 +91,24 @@ export default function ContactPage() {
                   </div>
                   <h3 className="font-bold text-white mb-2">1. Boka konsultation</h3>
                   <p className="text-sm text-foreground/70 leading-relaxed">Fyll i formuläret för att boka en tid med våra experter</p>
-                </div>
-                
+            </div>
+            
                 <div className="bg-gradient-to-br from-[#16213E]/80 to-[#1A1A2E]/80 backdrop-blur-xl rounded-2xl p-6 border border-[#0F3460]/30 text-center hover:border-[#00ADB5]/50 transition-all duration-300">
                   <div className="w-12 h-12 bg-gradient-to-br from-[#E94560] to-[#E94560]/80 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <MessageSquare className="h-6 w-6 text-white" />
-                  </div>
+              </div>
                   <h3 className="font-bold text-white mb-2">2. Diskutera behov</h3>
                   <p className="text-sm text-foreground/70 leading-relaxed">Vi går igenom dina behov och mål tillsammans i detalj</p>
-                </div>
-                
+            </div>
+            
                 <div className="bg-gradient-to-br from-[#16213E]/80 to-[#1A1A2E]/80 backdrop-blur-xl rounded-2xl p-6 border border-[#0F3460]/30 text-center hover:border-[#00ADB5]/50 transition-all duration-300">
                   <div className="w-12 h-12 bg-gradient-to-br from-[#0F3460] to-[#00ADB5] rounded-xl flex items-center justify-center mx-auto mb-4">
                     <Clock className="h-6 w-6 text-white" />
-                  </div>
+              </div>
                   <h3 className="font-bold text-white mb-2">3. Få en offert</h3>
                   <p className="text-sm text-foreground/70 leading-relaxed">Vi tar fram en skräddarsydd offert baserad på dina behov</p>
-                </div>
-                
+            </div>
+            
                 <div className="bg-gradient-to-br from-[#16213E]/80 to-[#1A1A2E]/80 backdrop-blur-xl rounded-2xl p-6 border border-[#0F3460]/30 text-center hover:border-[#00ADB5]/50 transition-all duration-300">
                   <div className="w-12 h-12 bg-gradient-to-br from-[#00ADB5] to-[#E94560] rounded-xl flex items-center justify-center mx-auto mb-4">
                     <PhoneCall className="h-6 w-6 text-white" />
