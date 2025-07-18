@@ -7,6 +7,7 @@ import { ArrowRight, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { FormattedText } from "@/components/ui/formatted-text"
+import { ProjectGallery } from "@/components/ui/project-gallery"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -26,7 +27,8 @@ const convertToProjectItem = (project: Project): ProjectItem => ({
   year: project.year,
   status: project.status,
   secondaryCategory: project.secondary_category,
-  progress: project.progress
+  progress: project.progress,
+  gallery: (project as any).image_gallery || []
 })
 
 export function PortfolioSection() {
@@ -122,12 +124,10 @@ export function PortfolioSection() {
               className="group relative bg-[#16213E]/50 rounded-lg overflow-hidden border border-[#0F3460]/30 hover:border-[#00ADB5]/50 transition-all duration-500"
             >
               <div className="relative h-60 overflow-hidden">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  width={600}
-                  height={400}
-                  className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                <ProjectGallery
+                  images={item.gallery && item.gallery.length > 0 ? item.gallery : [item.image]}
+                  title={item.title}
+                  className="w-full h-full"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#16213E] to-transparent opacity-70"></div>
                 <div className="absolute top-4 right-4 bg-[#00ADB5] text-white text-xs py-1 px-3 rounded-full">

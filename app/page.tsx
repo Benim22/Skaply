@@ -9,6 +9,7 @@ import { FAQSection } from "@/components/faq-section"
 import { PortfolioSection } from "@/components/portfolio-section"
 import { NewsletterSignup } from "@/components/newsletter-signup"
 import { SeoSchema } from "@/components/seo-schema"
+import { ProjectNotification } from "@/components/ui/project-notification"
 
 export default function HomePage() {
   return (
@@ -20,6 +21,16 @@ export default function HomePage() {
         url="https://www.skaply.se"
       />
       <Navbar />
+      <ProjectNotification 
+        project={{
+          title: "Moi Sushi & Poké Bowl",
+          description: "Komplett digitalt restaurangsystem med onlinebeställning, realtidsöversikt och automatisk kvittoutskrift. Byggt för hög prestanda och skalbarhet.",
+          image: "/barberhaus.png",
+          link: "https://moisushi.se",
+          category: "Webbutveckling",
+          status: "Färdig"
+        }}
+      />
       <main>
         <Hero />
         <About />

@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/components/ui/use-toast"
 import { FormattedText } from "@/components/ui/formatted-text"
+import { RichTextEditorV2 } from "@/components/ui/rich-text-editor-v2"
+import { ImageSelector } from "@/components/ui/image-selector"
 import { Pencil, Trash2, Plus, X } from "lucide-react"
 import {
   Dialog,
@@ -37,6 +39,7 @@ export function ProjectsAdmin() {
     description: "",
     category: "Webbutveckling",
     image_url: "",
+    image_gallery: [] as string[],
     technologies: "",
     project_link: "",
     featured: false,
@@ -80,7 +83,8 @@ export function ProjectsAdmin() {
       const projectData = {
         ...formData,
         technologies: formData.technologies.split(',').map(t => t.trim()).filter(Boolean),
-        progress: formData.status === 'Pågående' ? formData.progress : null
+        progress: formData.status === 'Pågående' ? formData.progress : null,
+        image_gallery: formData.image_gallery
       }
 
       if (editingProject) {
@@ -163,6 +167,7 @@ export function ProjectsAdmin() {
       description: project.description,
       category: project.category,
       image_url: project.image_url,
+      image_gallery: (project as any).image_gallery || [],
       technologies: project.technologies.join(', '),
       project_link: project.project_link || "",
       featured: project.featured,
@@ -183,6 +188,7 @@ export function ProjectsAdmin() {
       description: "",
       category: "Webbutveckling",
       image_url: "",
+      image_gallery: [],
       technologies: "",
       project_link: "",
       featured: false,
@@ -289,16 +295,12 @@ export function ProjectsAdmin() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="description">Beskrivning</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={4}
-                required
-              />
-            </div>
+            <RichTextEditorV2
+              value={formData.description}
+              onChange={(value) => setFormData({ ...formData, description: value })}
+              label="Beskrivning"
+              placeholder="Skriv projektbeskrivningen här..."
+            />
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -353,27 +355,30 @@ export function ProjectsAdmin() {
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="image_url">Bild URL</Label>
-                <Input
-                  id="image_url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  placeholder="/images/projekt.png"
-                  required
-                />
-              </div>
+            {/* Huvudbild */}
+            <ImageSelector
+              selectedImages={formData.image_url ? [formData.image_url] : []}
+              onImagesChange={(images) => setFormData({ ...formData, image_url: images[0] || "" })}
+              multiple={false}
+              className="space-y-2"
+            />
 
-              <div className="space-y-2">
-                <Label htmlFor="project_link">Projekt länk</Label>
-                <Input
-                  id="project_link"
-                  value={formData.project_link}
-                  onChange={(e) => setFormData({ ...formData, project_link: e.target.value })}
-                  placeholder="https://example.com"
-                />
-              </div>
+            {/* Bildgalleri */}
+            <ImageSelector
+              selectedImages={formData.image_gallery}
+              onImagesChange={(images) => setFormData({ ...formData, image_gallery: images })}
+              multiple={true}
+              className="space-y-2"
+            />
+
+            <div className="space-y-2">
+              <Label htmlFor="project_link">Projekt länk</Label>
+              <Input
+                id="project_link"
+                value={formData.project_link}
+                onChange={(e) => setFormData({ ...formData, project_link: e.target.value })}
+                placeholder="https://example.com"
+              />
             </div>
 
             <div className="space-y-2">

@@ -8,6 +8,8 @@ import { ExternalLink, Filter, X, Sparkles, ArrowRight, Eye } from "lucide-react
 import { Button } from "@/components/ui/button"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { FormattedText } from "@/components/ui/formatted-text"
+import { ProjectGallery } from "@/components/ui/project-gallery"
+import { ModalGallery } from "@/components/ui/modal-gallery"
 import { useProject, ProjectItem } from "@/contexts/project-context"
 import { supabase, Project } from "@/lib/supabase"
 
@@ -24,7 +26,8 @@ const convertToProjectItem = (project: Project): ProjectItem => ({
   year: project.year,
   status: project.status,
   secondaryCategory: project.secondary_category,
-  progress: project.progress
+  progress: project.progress,
+  gallery: (project as any).image_gallery || []
 })
 
 const categories = [
@@ -215,12 +218,10 @@ export function ProjectsPage() {
                   className="group relative bg-gradient-to-br from-[#16213E]/80 to-[#1A1A2E]/80 backdrop-blur-xl rounded-2xl overflow-hidden border border-[#0F3460]/30 hover:border-[#00ADB5]/50 transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-[#00ADB5]/10"
                 >
                   <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src={project.image}
-                      alt={project.title}
-                      width={600}
-                      height={400}
-                      className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
+                    <ProjectGallery
+                      images={project.gallery && project.gallery.length > 0 ? project.gallery : [project.image]}
+                      title={project.title}
+                      className="w-full h-full"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#16213E] via-transparent to-transparent opacity-80"></div>
                     
@@ -389,13 +390,12 @@ export function ProjectsPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative h-80 sm:h-96">
-              <Image
-                src={selectedProject.image}
-                alt={selectedProject.title}
-                fill
-                className="object-cover rounded-t-3xl"
+              <ModalGallery
+                images={selectedProject.gallery && selectedProject.gallery.length > 0 ? selectedProject.gallery : [selectedProject.image]}
+                title={selectedProject.title}
+                className="w-full h-full"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#16213E] via-transparent to-transparent opacity-80 rounded-t-3xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#16213E] via-transparent to-transparent opacity-80 rounded-t-3xl pointer-events-none"></div>
               
               <button 
                 onClick={closeModal}
