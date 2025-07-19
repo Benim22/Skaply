@@ -16,7 +16,6 @@ export interface ProjectItem {
   status?: string
   secondaryCategory?: string
   progress?: number
-  gallery?: string[]
 }
 
 interface ProjectContextType {
